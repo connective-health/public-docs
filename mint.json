@@ -1,24 +1,28 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Connective Health",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "dark": "/logo/dark.png",
+    "light": "/logo/CH_horizontal.png",
+    "href": "https://connectivehealth.ic"
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
+    "primary": "#047DB5",
+    "light": "#1DBCEE",
+    "dark": "#0C6284",
     "anchors": {
       "from": "#0D9373",
       "to": "#07C983"
     }
   },
+  "openapi": [
+    "staging-patient-appointment-api-1.0.0.yml"
+  ],
   "topbarLinks": [
     {
       "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "url": "mailto:techsupport@connectivehealth.io"
     }
   ],
   "topbarCtaButton": {
@@ -27,9 +31,14 @@
   },
   "tabs": [
     {
-      "name": "API Reference",
+      "name": "Sample API Reference",
       "url": "api-reference"
+    },
+    {
+      "name": "Patient Processing API",
+      "url": "scheduled-appointments"
     }
+
   ],
   "anchors": [
     {
@@ -51,15 +60,34 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["introduction", "quickstart", "development"]
+      "pages": [
+        "introduction",
+        "quickstart",
+        "development"
+      ]
     },
     {
       "group": "Essentials",
-      "pages": ["essentials/markdown", "essentials/code", "essentials/images", "essentials/settings", "essentials/navigation"]
+      "pages": [
+        "essentials/markdown",
+        "essentials/code",
+        "essentials/images",
+        "essentials/settings",
+        "essentials/navigation"
+      ]
     },
     {
       "group": "API Documentation",
-      "pages": ["api-reference/introduction"]
+      "pages": [
+        "api-reference/introduction"
+      ]
+    },
+    {
+      "group": "Patient Processing 2",
+      "pages": [
+        "scheduled-appointments/introduction",
+        "scheduled-appointments/initiate-processing-of-a-patient"
+      ]
     },
     {
       "group": "Endpoint Examples",
@@ -71,8 +99,7 @@
     }
   ],
   "footerSocials": {
-    "twitter": "https://twitter.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://www.linkedin.com/company/mintsearch"
+    "github": "https://github.com/connective-health",
+    "linkedin": "https://www.linkedin.com/company/connective-health/"
   }
 }
