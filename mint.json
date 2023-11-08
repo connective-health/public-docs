@@ -83,7 +83,7 @@
       ]
     },
     {
-      "group": "Patient Processing 2",
+      "group": "Patient Processing",
       "pages": [
         "scheduled-appointments/introduction",
         "scheduled-appointments/initiate-processing-of-a-patient"
