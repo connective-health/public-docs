@@ -16,7 +16,9 @@
       "to": "#07C983"
     }
   },
-  "openapi": "staging-patient-appointment-api-1.0.0.yml",
+  "openapi": [
+    "staging-patient-appointment-api-1.0.0.yml"
+  ],
   "topbarLinks": [
     {
       "name": "Support",
@@ -36,6 +38,7 @@
       "name": "Patient Processing API",
       "url": "scheduled-appointments"
     }
+
   ],
   "anchors": [
     {
