@@ -31,10 +31,6 @@
   },
   "tabs": [
     {
-      "name": "Sample API Reference",
-      "url": "api-reference"
-    },
-    {
       "name": "Patient Processing API",
       "url": "scheduled-appointments"
     }
@@ -47,14 +43,9 @@
       "url": "https://mintlify.com/docs"
     },
     {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
+      "name": "Podcast",
+      "icon": "podcast",
+      "url": "https://podcasts.apple.com/us/podcast/healthcare-interoperability-value-based-care/id1694801035"
     }
   ],
   "navigation": [
