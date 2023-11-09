@@ -58,19 +58,11 @@
       ]
     },
     {
-      "group": "Essentials",
+      "group": "Processing Results",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation"
-      ]
-    },
-    {
-      "group": "API Documentation",
-      "pages": [
-        "api-reference/introduction"
+        "results/patient-summary",
+        "results/quality-summary",
+        "results/patient-summary-fhir"
       ]
     },
     {
@@ -78,14 +70,6 @@
       "pages": [
         "scheduled-appointments/introduction",
         "scheduled-appointments/initiate-processing-of-a-patient"
-      ]
-    },
-    {
-      "group": "Endpoint Examples",
-      "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
       ]
     }
   ],
