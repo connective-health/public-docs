@@ -26,6 +26,8 @@ Part of the configuration is a templated object name which is where the document
 
 ## AWS S3 Setup
 
+We connect to AWS S3 using a federated web identity authz model. This allows for security without the need to exchange static secrets.
+
 1. Create (or identify) an S3 bucket which should be used for Connective Health to push documents to
     1. Our recommendation is to create a new bucket for this specific purpose to prevent accidental data leakage or other unexpected problems
 2. Create a new Role under the IAM section of your AWS Console
