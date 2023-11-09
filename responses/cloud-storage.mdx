@@ -1,0 +1,88 @@
+---
+title: 'Cloud Storage'
+description: 'Delivery to Cloud Storage'
+icon: 'cloud-arrow-up'
+---
+
+## Basics
+
+Delivery to a cloud storage provider object storage can be configured as needed which will enabled documents (PDFs or FHIR bundles) to be pushed to a cloud storage location of your choosing.
+
+Part of the configuration is a templated object name which is where the document will be written to.
+
+### Available Dynamic Values
+
+| Property           | Description                                                                    |
+|--------------------|--------------------------------------------------------------------------------|
+| `patientFirstName` | Patient first name                                                             |
+| `patientLastName`  | Patient last name                                                              |
+| `mrn`              | Patient MRN                                                                    |
+| `correlationId`    | Connective Health Correlation ID                                               |
+| `yyyy`             | Four-digit year                                                                |
+| `MM`               | Two-digit month                                                                |
+| `dd`               | Two-digit day                                                                  |
+| `documentType`     | Document type                                                                  |
+| `ext`              | File extension - this is always required to be part of the configured location |
+
+## AWS S3 Setup
+
+1. Create (or identify) an S3 bucket which should be used for Connective Health to push documents to
+    1. Our recommendation is to create a new bucket for this specific purpose to prevent accidental data leakage or other unexpected problems
+2. Create a new Role under the IAM section of your AWS Console
+    1. The name can be anything you want, for example ch-assume-role-policy
+3. Under this Role, create a new custom trust policy by editing the JSON of the policy
+    1. Set the policy to
+```json
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Principal": {
+				"Federated": "accounts.google.com"
+			},
+			"Action": "sts:AssumeRoleWithWebIdentity",
+			"Condition": {
+				"StringEquals": {
+					"accounts.google.com:sub": [
+						"value depends on environment"
+					]
+				}
+			}
+		}
+	]
+}
+```
+We will provide you with the appropriate Google Account value
+1. Under the role add new permissions
+    1. The permissions should provide these permissions (at least):
+        * s3:PutObject
+        * s3:GetObject
+        * s3:ListBucket
+        * s3:GetBucketLocation
+2. Make sure to populate the resources array with the S3 bucket and objects
+3. Here is a complete example
+
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": [
+                "arn:aws:s3:::ch-test-protected-storage",
+                "arn:aws:s3:::ch-test-protected-storage/*"
+            ]
+        }
+    ]
+}
+```
+On the Role page, under the Summary section there is an ARN value. Copy this value and provide it to Connective Health

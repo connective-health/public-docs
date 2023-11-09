@@ -71,6 +71,14 @@
         "scheduled-appointments/introduction",
         "scheduled-appointments/initiate-processing-of-a-patient"
       ]
+    },
+    {
+      "group": "Response Options",
+      "pages": [
+        "responses/clinical-direct-messaging",
+        "responses/fax",
+        "responses/cloud-storage"
+      ]
     }
   ],
   "footerSocials": {
