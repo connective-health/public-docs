@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.0.0
+  version: 1.1.0
 servers:
 - url: https://processing-request-staging.connectivehealth.io/
   description: Customer testing site. Test data only. No PHI.
@@ -32,18 +32,18 @@ paths:
               $ref: '#/components/schemas/ScheduledAppointment'
         required: true
       responses:
-        "400":
-          description: Validation problems
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JsonError'
         "200":
           description: Success
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ScheduledAppointmentResponse'
+        "400":
+          description: Validation problems
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
         "401":
           description: Missing or invalid apikey
           content:
@@ -155,6 +155,15 @@ components:
             date
           format: date
           example: 2022-12-12
+    Directives:
+      type: object
+      properties:
+        newPatient:
+          type: boolean
+          description: patient is new to the clinic (first time patient)
+          example: false
+          default: false
+      description: Directives which may influence how the data is processed
     Gender:
       type: string
       enum:
@@ -378,9 +387,13 @@ components:
           type: array
           description: All active diagnoses (problems) known about the patient. Must
             all be ICD-10 codes. If the patient is an existing patient then this list
-            should be populated with all known diagnoses.
+            should be populated with all known diagnoses
           items:
             $ref: '#/components/schemas/Diagnosis'
+        directives:
+          allOf:
+          - $ref: '#/components/schemas/Directives'
+          - description: Directives which may influence how the data is processed
     ScheduledAppointmentResponse:
       type: object
       properties:
