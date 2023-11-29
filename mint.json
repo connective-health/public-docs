@@ -25,44 +25,43 @@
       "url": "mailto:techsupport@connectivehealth.io"
     }
   ],
-  "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
-  },
   "tabs": [
     {
       "name": "Patient Processing API",
       "url": "scheduled-appointments"
     }
-
   ],
   "anchors": [
     {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
-    },
-    {
-      "name": "Podcast",
-      "icon": "podcast",
-      "url": "https://podcasts.apple.com/us/podcast/healthcare-interoperability-value-based-care/id1694801035"
+      "name": "Patient Processing API",
+      "icon": "hospital-user",
+      "url": "scheduled-appointments"
     }
   ],
   "navigation": [
     {
-      "group": "Get Started",
+      "group": "Welcome",
       "pages": [
-        "introduction",
-        "quickstart",
-        "development"
+        "introduction"
       ]
     },
     {
-      "group": "Processing Results",
+      "group": "Product",
       "pages": [
-        "results/patient-summary",
-        "results/quality-summary",
-        "results/patient-summary-fhir"
+        "product/use-cases-and-value-prop",
+        "product/risk-adjustment",
+        "product/medical-summary-pdf",
+        "product/quality-gap-closure-pdf",
+        "product/fhir-data",
+        "product/bulk-data"
+      ]
+    },
+    {
+      "group": "Implementation",
+      "pages": [
+        "implementation/getting-started",
+        "implementation/sample-project-steps",
+        "implementation/pilot-process"
       ]
     },
     {
@@ -78,6 +77,12 @@
         "responses/clinical-direct-messaging",
         "responses/fax",
         "responses/cloud-storage"
+      ]
+    },
+    {
+      "group": "Development",
+      "pages": [
+        "development/requirements"
       ]
     }
   ],
