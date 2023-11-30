@@ -48,20 +48,8 @@
     {
       "group": "Product",
       "pages": [
-        "product/use-cases-and-value-prop",
-        "product/risk-adjustment",
-        "product/medical-summary-pdf",
-        "product/quality-gap-closure-pdf",
         "product/fhir-data",
         "product/bulk-data"
-      ]
-    },
-    {
-      "group": "Implementation",
-      "pages": [
-        "implementation/getting-started",
-        "implementation/sample-project-steps",
-        "implementation/pilot-process"
       ]
     },
     {
