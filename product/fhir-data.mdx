@@ -1,0 +1,56 @@
+---
+title: 'FHIR Data'
+description: 'Data output as FHIR'
+icon: 'fire-flame-curved'
+---
+
+# Basics
+All Connective Health FHIR interactions and resources are based on the [FHIR R4](https://www.hl7.org/fhir/R4/) specification.
+
+Whenever possible, the resources will also implement the corresponding [US Core 6.1.0 profile](https://www.hl7.org/fhir/us/core/) and will pass validations.
+
+Sometimes there may be cases where source data does not satisfy FHIR or US Core profile validations, in these cases we will still send the data. As the client of the FHIR data produced you may either implement or disregard these validation errors.
+
+# Interaction Patterns
+
+## Push
+
+* Customer is able to have a FHIR bundle pushed to them 
+    * Via an S3 bucket (currently available)
+    * Azure (soon to be available)
+    * Google Cloud Storage (soon to be available)
+
+## Pull
+
+* Customer is able to request a FHIR bundle on demand (soon to be available)
+
+# Bundles
+
+## Patient Summary Bundle
+
+Base element is a [Bundle](https://www.hl7.org/fhir/R4/bundle.html) resource, individual FHIR resources will eventually also be available. All information has been deduplicated, normalized, augmented, and curated prior to inserting into FHIR format. 
+
+
+| Resource                                                                              | US Core Profile                                                                                                                                    | Description                                                                                                                                                                            |
+|---------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Patient](https://www.hl7.org/fhir/R4/patient.html)                                   | [US Core Patient](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-patient.html)                                                       | Based on the patient processing events meaning we do not deduplicate the patient's demographics                                                                                        |
+| [AllergyIntolerance](https://www.hl7.org/fhir/R4/allergyintolerance.html)             | [US Core AllergyIntolerance](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-allergyintolerance.html)                                 | Based on Connective Health's patient summary template                                                                                                                                  |
+| [CarePlan](https://www.hl7.org/fhir/R4/careplan.html)                                 | [US Core CarePlan](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-careplan.html)                                                     | Includes reference to encounter and Based on Connective Health's patient summary template                                                                                              |
+| [Encounter](https://www.hl7.org/fhir/R4/encounter.html)                               | [US Core Encounter](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-encounter.html)                                                   | Based on Connective Health's patient summary template                                                                                                                                  |
+| [Immunization](https://www.hl7.org/fhir/R4/immunization.html)                         | [US Core Immunization](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-immunization.html)                                             | Based on Connective Health's patient summary template. Will not include any immunizations which do not have a date as this is required by FHIR                                         |
+| [Observation](https://www.hl7.org/fhir/R4/observation.html) (Labs)                    | [US Core Diagnositic Report Lab](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-diagnosticreport-lab.html)                           | Includes all labs, not just what is on Connective Health's patient summary template                                                                                                    |
+| [MedicationRequest](https://www.hl7.org/fhir/R4/medicationrequest.html) (Medications) | [US Core MedicationRequest](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-medicationrequest.html)                                   | Includes all medications, not just what is on Connective Health's patient summary template. Will not include a medication if is has neither a code nor a name code as this is required |
+| [DocumentReference](https://www.hl7.org/fhir/R4/documentreference.html) (Notes)       | [US Core DocumentReference](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-documentreference.html)                                   | Includes reference to encounter. Based on Connective Health's patient summary template                                                                                                 |
+| [Condition](https://www.hl7.org/fhir/R4/condition.html) (Problems)                    | [US Core Condition Problems Health Concerns](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-condition-problems-health-concerns.html) | Based on Connective Health's patient summary template                                                                                                                                  |
+| [Procedure](https://www.hl7.org/fhir/R4/procedure.html)                               | [US Core Procedure](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-procedure.html)                                                   | Includes reference to encounter. Based on Connective Health's patient summary template                                                                                                 |
+| [Observation](https://www.hl7.org/fhir/R4/observation.html)                           | [US Core Vital Signs](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-vital-signs.html)                                               | Only the vital signs listed above are currently included in the FHIR bundle                                                                                                            |
+| [Observation](https://www.hl7.org/fhir/R4/observation.html)                           | [US Core BMI](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-bmi.html)                                                               |                                                                                                                                                                                        |
+| [Observation](https://www.hl7.org/fhir/R4/observation.html)                           | [US Core Body Height](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-body-height.html)                                               |                                                                                                                                                                                        |
+| [Observation](https://www.hl7.org/fhir/R4/observation.html)                           | [US Core Body Temperature](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-body-temperature.html)                                     |                                                                                                                                                                                        |
+| [Observation](https://www.hl7.org/fhir/R4/observation.html)                           | [US Core Heart Rate](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-heart-rate.html)                                                 |                                                                                                                                                                                        |
+| [Observation](https://www.hl7.org/fhir/R4/observation.html)                           | [US Core Pulse Oximetry](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-pulse-oximetry.html)                                         |                                                                                                                                                                                        |
+| [Observation](https://www.hl7.org/fhir/R4/observation.html)                           | [US Core Respiratory Rate](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-respiratory-rate.html)                                     |                                                                                                                                                                                        |
+| [Practitioner](https://www.hl7.org/fhir/R4/practitioner.html)                         | [US Core Practitioner](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-practitioner.html)                                             | Only returned as a contained resource                                                                                                                                                  |
+| [Practitioner Role](https://www.hl7.org/fhir/R4/practitionerrole.html)                | [US Core PractitionerRole](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-practitionerrole.html)                                     | Only returned as a contained resource                                                                                                                                                  |
+| [Location](https://www.hl7.org/fhir/R4/location.html)                                 | [US Core Location](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-location.html)                                                     | Only returned as a contained resource                                                                                                                                                  |
+

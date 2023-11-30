@@ -1,0 +1,29 @@
+---
+title: 'Requirements'
+description: 'Requirements for connecting to a Connective Health APIs'
+icon: 'book'
+---
+
+# Security
+
+### Authentication
+
+All API endpoints are authenticated using an API Key which will be provided to you upon initiation of a pilot. 
+
+This key should be provided as an HTTP header with every request.
+
+```
+apiKey: <your key here>
+```
+
+### TLS
+
+All communication is required to utilize modern TLS version 1.2 or newer with a modern cipher.
+
+### Rate Limits
+
+In general, Connective Health will impose rate limits on all API endpoints.
+
+This is for both your protection (avoiding unexpected costs) and ours (system instability).
+These limits are not intended to impose undo restrictions on your system and we will work with you on appropriate values.
+If you reach 
