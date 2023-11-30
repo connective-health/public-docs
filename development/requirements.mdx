@@ -6,7 +6,17 @@ icon: 'book'
 
 # Security
 
-### Authentication
+## Overview
+
+All interactions with Connective Health must satisfy all [HIPAA](https://www.hhs.gov/hipaa/for-professionals/security/guidance/cybersecurity/index.html) and other regulatory requirements. In particular, patient information
+must always be encrypted while in transit to and from Connective Health.
+
+## TLS
+
+All communication is required to utilize modern TLS version 1.2 or newer with a modern cipher.
+If utilizing a Connective Health API, your system must be configured to work with these requirements. See [this information](https://www.ssl.com/guide/tls-standards-compliance/#hipaa) for more guidance.
+
+## Authentication
 
 All API endpoints are authenticated using an API Key which will be provided to you upon initiation of a pilot. 
 
@@ -16,11 +26,9 @@ This key should be provided as an HTTP header with every request.
 apiKey: <your key here>
 ```
 
-### TLS
+# Other Requirements
 
-All communication is required to utilize modern TLS version 1.2 or newer with a modern cipher.
-
-### Rate Limits
+## Rate Limits
 
 In general, Connective Health will impose rate limits on all API endpoints.
 
