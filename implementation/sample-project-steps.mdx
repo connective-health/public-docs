@@ -1,5 +1,39 @@
 ---
-title: 'Sample Project'
-description: 'Sample project steps'
+title: 'Implementation Details'
+description: 'Sample implementation project guide'
 icon: 'stairs'
 ---
+
+# Sample Implementation Project Steps
+
+Implementation steps may vary according to use case and integration methods elected.
+Below is a sample implementation project with what to expect when implementing the
+Connective Health Care Summary service.
+
+<Steps>
+    <Step title="Project Kick off meeting">
+        * One hour meeting for everyone to meet, discuss roles, and the work to be done
+    </Step>
+    <Step title="EHR Implementation and Product Configuration">
+        * Establish Care Summary request process (Connective Health API, EHR Integration, etc.)
+        * Determine return mechanism for the Care Summary. Options include Clinical Direct Message, SFTP, Fax, or Cloud delivery
+        * Finalize the clinical configurations (no technical work)
+    </Step>
+    <Step title="Test send of Patient Care Summaries to Clinic and Train Lead Person on Clinic">
+        * Test a sample set of patients via API or a manually loaded set of patients. Return Care Summaries either via agreed upon response method
+        * Train lead person in each clinic on the content, the sources, how data is associated
+    </Step>
+    <Step title="Centralized Training Sessions and Product Go-Live">
+        * Centralized training on the service with materials and live discussions
+        * Turn the product live
+    </Step>
+    <Step title="Initial Report Out Discussion">
+        * Review first few weeks of the service
+        * Review clinical content to make any necessary configuration tweaks necessary
+        * Validate workflow and identify any necessary improvements
+    </Step>
+    <Step title="Clinic Check-ins and working through data source issues">
+        * Set series of follow on meeting to discuss the service
+        * Connective will work through data source issues
+    </Step>
+</Steps>

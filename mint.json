@@ -53,6 +53,14 @@
       ]
     },
     {
+      "group": "Implementation",
+      "pages": [
+        "implementation/getting-started",
+        "implementation/sample-project-steps",
+        "implementation/pilot-process"
+      ]
+    },
+    {
       "group": "Patient Processing",
       "pages": [
         "scheduled-appointments/introduction",
