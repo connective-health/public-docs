@@ -12,17 +12,17 @@ Part of the configuration is a templated object name which is where the document
 
 ### Available Dynamic Values
 
-| Property           | Description                                                                    |
-|--------------------|--------------------------------------------------------------------------------|
-| `patientFirstName` | Patient first name                                                             |
-| `patientLastName`  | Patient last name                                                              |
-| `mrn`              | Patient MRN                                                                    |
-| `correlationId`    | Connective Health Correlation ID                                               |
-| `yyyy`             | Four-digit year                                                                |
-| `MM`               | Two-digit month                                                                |
-| `dd`               | Two-digit day                                                                  |
-| `documentType`     | Document type                                                                  |
-| `ext`              | File extension - this is always required to be part of the configured location |
+| Property           | Description                                                    |
+|--------------------|----------------------------------------------------------------|
+| `patientFirstName` | Patient first name                                             |
+| `patientLastName`  | Patient last name                                              |
+| `mrn`              | Patient MRN                                                    |
+| `correlationId`    | Connective Health Correlation ID                               |
+| `yyyy`             | Four-digit year                                                |
+| `MM`               | Two-digit month                                                |
+| `dd`               | Two-digit day                                                  |
+| `documentType`     | Document type. Required to be part of the configured location  |
+| `ext`              | File extension. Required to be part of the configured location |
 
 ## AWS S3 Setup
 
