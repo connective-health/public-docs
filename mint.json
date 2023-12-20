@@ -48,8 +48,12 @@
     {
       "group": "Product",
       "pages": [
+        "product/introduction",
+        "product/patient-care-summary",
+        "product/risk-adjustment",
+        "product/quality-gap-closure",
         "product/fhir-data",
-        "product/bulk-data"
+        "product/structured-reports"
       ]
     },
     {

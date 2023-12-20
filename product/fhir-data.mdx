@@ -5,11 +5,13 @@ icon: 'fire-flame-curved'
 ---
 
 # Basics
-All Connective Health FHIR interactions and resources are based on the [FHIR R4](https://www.hl7.org/fhir/R4/) specification.
 
-Whenever possible, the resources will also implement the corresponding [US Core 6.1.0 profile](https://www.hl7.org/fhir/us/core/) and will pass validations.
+For customers interested in the structured dataset underpinning our product suite (Care Summary, Risk Adjustment, and Quality Gap Closure), Connective Health offers a FHIR data product. The dataset is deduplicated, normalized, and curated using best-in-class data cleansing, with a longer lookback period. In some cases, the dataset can stretch back more than twenty years.
 
-Sometimes there may be cases where source data does not satisfy FHIR or US Core profile validations, in these cases we will still send the data. As the client of the FHIR data produced you may either implement or disregard these validation errors.
+The structure of Connective Health’s FHIR interactions and resources are all based on the [FHIR R4](https://www.hl7.org/fhir/R4/) specification. Whenever possible, the resources will also implement the corresponding [US Core 6.1.0 profile](https://www.hl7.org/fhir/us/core/) and will pass validations.
+
+In the event that the source data does not satisfy FHIR or US Core profile validations, we will still send it, allowing the customer final control over whether to ingest, correct, or disregard the data.
+
 
 # Interaction Patterns
 
