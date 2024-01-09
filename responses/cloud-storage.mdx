@@ -57,7 +57,8 @@ We connect to AWS S3 using a federated web identity authz model. This allows for
 	]
 }
 ```
-We will provide you with the appropriate Google Account value
+We will provide you with the appropriate Google Account `sub` value based on the environment (staging or production).
+
 1. Under the role add new permissions
     1. The permissions should provide these permissions (at least):
         * s3:PutObject
