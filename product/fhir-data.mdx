@@ -17,10 +17,10 @@ In the event that the source data does not satisfy FHIR or US Core profile valid
 
 ## Push
 
-* Customer is able to have a FHIR bundle pushed to them 
-    * Via an S3 bucket (currently available)
-    * Azure (soon to be available)
-    * Google Cloud Storage (soon to be available)
+* Customer is able to have a FHIR bundle pushed to them
+  * Via an S3 bucket (currently available)
+  * Azure (soon to be available)
+  * Google Cloud Storage (soon to be available)
 
 ## Pull
 
@@ -30,7 +30,7 @@ In the event that the source data does not satisfy FHIR or US Core profile valid
 
 ## Patient Summary Bundle
 
-Base element is a [Bundle](https://www.hl7.org/fhir/R4/bundle.html) resource, individual FHIR resources will eventually also be available. All information has been deduplicated, normalized, augmented, and curated prior to inserting into FHIR format. 
+Base element is a [Bundle](https://www.hl7.org/fhir/R4/bundle.html) resource, individual FHIR resources will eventually also be available. All information has been deduplicated, normalized, augmented, and curated prior to inserting into FHIR format.
 
 
 | Resource                                                                              | US Core Profile                                                                                                                                    | Description                                                                                                                                                                            |
@@ -43,7 +43,7 @@ Base element is a [Bundle](https://www.hl7.org/fhir/R4/bundle.html) resource, in
 | [Observation](https://www.hl7.org/fhir/R4/observation.html) (Labs)                    | [US Core Diagnositic Report Lab](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-diagnosticreport-lab.html)                           | Includes all labs, not just what is on Connective Health's patient summary template                                                                                                    |
 | [MedicationRequest](https://www.hl7.org/fhir/R4/medicationrequest.html) (Medications) | [US Core MedicationRequest](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-medicationrequest.html)                                   | Includes all medications, not just what is on Connective Health's patient summary template. Will not include a medication if is has neither a code nor a name code as this is required |
 | [DocumentReference](https://www.hl7.org/fhir/R4/documentreference.html) (Notes)       | [US Core DocumentReference](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-documentreference.html)                                   | Includes reference to encounter. Based on Connective Health's patient summary template                                                                                                 |
-| [Condition](https://www.hl7.org/fhir/R4/condition.html) (Problems)                    | [US Core Condition Problems Health Concerns](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-condition-problems-health-concerns.html) | Based on Connective Health's patient summary template                                                                                                                                  |
+| [Condition](https://www.hl7.org/fhir/R4/condition.html) (Problems)                    | [US Core Condition Problems Health Concerns](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-condition-problems-health-concerns.html) | Includes all problems                                                                                                                                                                  |
 | [Procedure](https://www.hl7.org/fhir/R4/procedure.html)                               | [US Core Procedure](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-procedure.html)                                                   | Includes reference to encounter. Based on Connective Health's patient summary template                                                                                                 |
 | [Observation](https://www.hl7.org/fhir/R4/observation.html)                           | [US Core Vital Signs](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-vital-signs.html)                                               | Only the vital signs listed above are currently included in the FHIR bundle                                                                                                            |
 | [Observation](https://www.hl7.org/fhir/R4/observation.html)                           | [US Core BMI](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-bmi.html)                                                               |                                                                                                                                                                                        |
@@ -55,4 +55,3 @@ Base element is a [Bundle](https://www.hl7.org/fhir/R4/bundle.html) resource, in
 | [Practitioner](https://www.hl7.org/fhir/R4/practitioner.html)                         | [US Core Practitioner](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-practitioner.html)                                             | Only returned as a contained resource                                                                                                                                                  |
 | [Practitioner Role](https://www.hl7.org/fhir/R4/practitionerrole.html)                | [US Core PractitionerRole](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-practitionerrole.html)                                     | Only returned as a contained resource                                                                                                                                                  |
 | [Location](https://www.hl7.org/fhir/R4/location.html)                                 | [US Core Location](https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-location.html)                                                     | Only returned as a contained resource                                                                                                                                                  |
-
