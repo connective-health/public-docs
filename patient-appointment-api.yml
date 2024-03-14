@@ -71,19 +71,19 @@ components:
       properties:
         lines:
           type: array
-          description: street lines of the address
+          description: Street lines of the address
           example: "[\"123 Main St\", \"Suite 567\"]"
           items:
             type: string
         city:
           pattern: "[^<>\"%;&+@:]*$"
           type: string
-          description: the city
+          description: The city
           example: Minneapolis
         state:
           pattern: "^[A-Za-z]{2}$|\\s*"
           type: string
-          description: state code abbreviation
+          description: State code abbreviation
           example: MN
         zip:
           pattern: "^\\d{5}$"
@@ -103,24 +103,24 @@ components:
         code:
           pattern: "[^<>\"%;&+@:]*$"
           type: string
-          description: the specific code from a code system
+          description: The specific code from a code system
           example: N0000175497
         codeSystem:
           pattern: "[^<>\"%;&+@:]*$"
           type: string
-          description: code system OID. Must be populated if known
+          description: Code system OID. Must be populated if known
           example: 2.16.840.1.113883.6.345
         codeSystemName:
           pattern: "[^<>\"%;&+@:]*$"
           type: string
-          description: the human readable name of the code system name if known
+          description: Human-readable name of the code system name if known
           example: MED-RT
         displayName:
           minLength: 1
           type: string
-          description: the human readable description of the code
+          description: Human-readable description of the code
           example: Penicillin-class Antibacterial
-      description: the medication name code. Code system should be RxNorm if possible
+      description: Medication name code. Code system should be RxNorm if possible
       example:
         code: "6809"
         codeSystem: 2.16.840.1.113883.6.88
@@ -136,28 +136,28 @@ components:
         value:
           minLength: 1
           type: string
-          description: the phone number or email address
+          description: Phone number or email address
           example: "9525551234"
         contactPointSystem:
           allOf:
             - $ref: '#/components/schemas/ContactPointSystem'
-            - description: type of contact
+            - description: Type of contact
               example: PHONE
         contactPointUse:
           allOf:
             - $ref: '#/components/schemas/ContactPointUse'
-            - description: use for the contact
+            - description: Use for the contact
               example: HOME
     ContactPointSystem:
       type: string
-      description: type of contact
+      description: Type of contact
       example: PHONE
       enum:
         - PHONE
         - EMAIL
     ContactPointUse:
       type: string
-      description: use for the contact
+      description: Use for the contact
       example: HOME
       enum:
         - HOME
@@ -173,17 +173,16 @@ components:
           minLength: 1
           pattern: "[^<>\"%;&+@:]*$"
           type: string
-          description: the diagnosis code including punctuation
+          description: The diagnosis code including punctuation
           example: E66.01
         displayName:
           minLength: 1
           type: string
-          description: the display value for the diagnosis
+          description: The display value for the diagnosis
           example: Morbid (severe) obesity due to excess calories
         date:
           type: string
-          description: the date of the problem. May be the onset date or diagnosed
-            date
+          description: Date of the problem (onset or diagnosed)
           format: date
           example: 2022-12-12
     Directives:
@@ -191,7 +190,7 @@ components:
       properties:
         newPatient:
           type: boolean
-          description: patient is new to the clinic (first time patient)
+          description: Whether patient is new to the clinic (first time patient)
           example: false
           default: false
       description: Directives which may influence how the data is processed
@@ -203,26 +202,26 @@ components:
       properties:
         text:
           type: string
-          description: "the prescriber's sig, or directions for taking the medication"
+          description: "Prescriber's sig, or directions for taking the medication"
           example: take 1 tablet by mouth once daily
         strengthUnit:
           pattern: "[^<>\"%;&+@:]*$"
           type: string
-          description: unit of the dosage strength
+          description: Unit of the dosage strength
           example: mg
         strengthValue:
           type: number
-          description: value of the dosage strength
+          description: Value of the dosage strength
           format: double
           example: 100
         amountUnit:
           pattern: "[^<>\"%;&+@:]*$"
           type: string
-          description: unit of a single dose
+          description: Unit of a single dose
           example: puffs
         amountValue:
           type: number
-          description: value of a single dose
+          description: Value of a single dose
           format: double
           example: 2
     Facility:
@@ -239,7 +238,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/Address'
             - description: Facility Address
-      description: facility where the medication was prescribed
+      description: Facility where the medication was prescribed
     Gender:
       type: string
       enum:
@@ -316,13 +315,13 @@ components:
       properties:
         active:
           type: boolean
-          description: whether this medication is still being actively used by the patient
+          description: Whether this medication is still being actively used by the
+            patient
           example: true
         nameCode:
           allOf:
             - $ref: '#/components/schemas/Code'
-            - description: the medication name code. Code system should be RxNorm if
-                possible
+            - description: Medication name code. Code system should be RxNorm if possible
               example:
                 code: "6809"
                 codeSystem: 2.16.840.1.113883.6.88
@@ -331,8 +330,7 @@ components:
         classCode:
           allOf:
             - $ref: '#/components/schemas/Code'
-            - description: the medication class code. Code system should be MED-RT if
-                possible
+            - description: Medication class code. Code system should be MED-RT if possible
               example:
                 code: N0000175565
                 codeSystem: 2.16.840.1.113883.6.345
@@ -341,7 +339,7 @@ components:
         schedule:
           allOf:
             - $ref: '#/components/schemas/Code'
-            - description: the medication schedule code.
+            - description: Medication schedule code.
               example:
                 code: IV
                 codeSystem: 2.16.840.1.113883.12.477
@@ -357,7 +355,7 @@ components:
         code:
           allOf:
             - $ref: '#/components/schemas/Code'
-            - description: the medication code. This is the specific medication including
+            - description: Medication code. This is the specific medication including
                 form. Code system should be RxNorm if possible
               example:
                 code: "861007"
@@ -367,8 +365,8 @@ components:
         form:
           allOf:
             - $ref: '#/components/schemas/Code'
-            - description: the form the medication is in. Code system should be NCI
-                Thesaurus if possible
+            - description: Form the medication is in. Code system should be NCI Thesaurus
+                if possible
               example:
                 code: C42998
                 codeSystem: 2.16.840.1.113883.3.26.1.1
@@ -377,7 +375,7 @@ components:
         route:
           allOf:
             - $ref: '#/components/schemas/Code'
-            - description: the route the medication is administered
+            - description: Route by which the medication is administered
               example:
                 code: C38288
                 codeSystem: 2.16.840.1.113883.3.26.1.1
@@ -385,45 +383,44 @@ components:
                 displayName: oral
         prescribedDate:
           type: string
-          description: "the date the medication was prescribed, in ISO-8601 format\
-            \ yyyy-MM-dd"
+          description: "Date the medication was prescribed, in ISO-8601 format yyyy-MM-dd"
           format: date
           example: 2023-12-02
         prescriber:
           allOf:
             - $ref: '#/components/schemas/Provider'
-            - description: prescriber of the medication
+            - description: Prescriber of the medication
         facility:
           allOf:
             - $ref: '#/components/schemas/Facility'
-            - description: facility where the medication was prescribed
+            - description: Facility where the medication was prescribed
         initialFillQuantity:
           type: number
-          description: the quantity initially filled for the medication
+          description: Quantity initially filled for the medication
           format: double
           example: 10
         numberOfRefillsAllowed:
           type: integer
-          description: the number of refills allowed for this prescription
+          description: Number of refills allowed for this prescription
           format: int32
           example: 0
         timingEvent:
           allOf:
             - $ref: '#/components/schemas/TimingEvent'
-            - description: "timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
+            - description: "Timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
               \ (OID 2.16.840.1.113883.4.642.3.78). Should be consistent with frequency\
               \ if both populated"
               example: QD
         frequencyUnit:
           pattern: "[^<>\"%;&+@:]*$"
           type: string
-          description: should be a unit of time as defined by http://hl7.org/fhir/ValueSet/units-of-time.
+          description: Unit of time as defined by http://hl7.org/fhir/ValueSet/units-of-time.
             Should be consistent with timingEvent if both populated
           example: d
         frequencyValue:
           type: number
-          description: frequency the medication should be taken. Should be consistent
-            with timingEvent if both populated
+          description: Frequency at which the medication should be taken. Should be
+            consistent with timingEvent if both populated
           format: double
           example: 1
         dosageInstruction:
@@ -528,7 +525,7 @@ components:
           example: "1234567890"
         name:
           $ref: '#/components/schemas/Name'
-      description: "A medical provider"
+      description: A medical provider
     Resource:
       type: object
       properties:
@@ -547,7 +544,7 @@ components:
           $ref: '#/components/schemas/Patient'
         upcomingAppointmentDate:
           type: string
-          description: date of the appointment in ISO-8601 format yyyy-MM-dd
+          description: Date of the appointment in ISO-8601 format yyyy-MM-dd
           format: date
           example: 2024-11-05
         upcomingAppointmentProvider:
@@ -580,7 +577,7 @@ components:
         responseFriendlyName:
           pattern: "[^<>\"%;&+@:]*$"
           type: string
-          description: Human readable name to send response message to
+          description: Human-readable name to send response message to
           example: Heart Clinic
         batchId:
           pattern: "[^<>\"%;&+@:]*$"
@@ -607,7 +604,7 @@ components:
             - description: Directives which may influence how the data is processed
     TimingEvent:
       type: string
-      description: "timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
+      description: "Timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
         \ (OID 2.16.840.1.113883.4.642.3.78). Should be consistent with frequency\
         \ if both populated"
       example: QD
