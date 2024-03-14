@@ -1,23 +1,23 @@
 openapi: 3.0.1
 info:
-  title: Patient Appointment API
-  description: API for initiating processing of a patient
+  title: Processing Request API
+  description: API for processing of a patient
   termsOfService: https://connectivehealth.io/website-terms-of-use/
   contact:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.1.0
+  version: 1.2.0
 servers:
 - url: https://processing-request-staging.connectivehealth.io/
   description: Customer testing site. Test data only. No PHI.
 security:
-- apiKey: []
+  - apiKey: [ ]
 paths:
   /v1/scheduled-appointment:
     post:
       tags:
-      - Scheduled Appointments
+        - Scheduled Appointments
       summary: Initiate processing of a patient
       description: |-
         Initiates the asynchronous processing of a patient using multiple clinical data networks.
@@ -37,7 +37,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScheduledAppointmentResponse'
+                $ref: '#/components/schemas/ProcessingResponse'
         "400":
           description: Validation problems
           content:
@@ -49,7 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScheduledAppointmentResponse'
+                $ref: '#/components/schemas/ProcessingResponse'
 components:
   schemas:
     AbstractResource_JsonError_:
@@ -66,7 +66,7 @@ components:
               $ref: '#/components/schemas/Resource'
     Address:
       required:
-      - zip
+        - zip
       type: object
       properties:
         lines:
@@ -88,18 +88,49 @@ components:
         zip:
           pattern: "^\\d{5}$"
           type: string
-          description: zip code
+          description: 5-digit zip code
           example: "55401"
     Charset:
       type: object
       properties:
         registered:
           type: boolean
+    Code:
+      required:
+        - displayName
+      type: object
+      properties:
+        code:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: the specific code from a code system
+          example: N0000175497
+        codeSystem:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: code system OID. Must be populated if known
+          example: 2.16.840.1.113883.6.345
+        codeSystemName:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: the human readable name of the code system name if known
+          example: MED-RT
+        displayName:
+          minLength: 1
+          type: string
+          description: the human readable description of the code
+          example: Penicillin-class Antibacterial
+      description: the medication name code. Code system should be RxNorm if possible
+      example:
+        code: "6809"
+        codeSystem: 2.16.840.1.113883.6.88
+        codeSystemName: RxNorm
+        displayName: metFORMIN
     ContactPoint:
       required:
-      - contactPointSystem
-      - contactPointUse
-      - value
+        - contactPointSystem
+        - contactPointUse
+        - value
       type: object
       properties:
         value:
@@ -109,33 +140,33 @@ components:
           example: "9525551234"
         contactPointSystem:
           allOf:
-          - $ref: '#/components/schemas/ContactPointSystem'
-          - description: type of contact
-            example: PHONE
+            - $ref: '#/components/schemas/ContactPointSystem'
+            - description: type of contact
+              example: PHONE
         contactPointUse:
           allOf:
-          - $ref: '#/components/schemas/ContactPointUse'
-          - description: use for the contact
-            example: HOME
+            - $ref: '#/components/schemas/ContactPointUse'
+            - description: use for the contact
+              example: HOME
     ContactPointSystem:
       type: string
       description: type of contact
       example: PHONE
       enum:
-      - PHONE
-      - EMAIL
+        - PHONE
+        - EMAIL
     ContactPointUse:
       type: string
       description: use for the contact
       example: HOME
       enum:
-      - HOME
-      - WORK
-      - MOBILE
+        - HOME
+        - WORK
+        - MOBILE
     Diagnosis:
       required:
-      - code
-      - displayName
+        - code
+        - displayName
       type: object
       properties:
         code:
@@ -164,17 +195,62 @@ components:
           example: false
           default: false
       description: Directives which may influence how the data is processed
+    Dosage:
+      required:
+        - amountValue
+        - strengthValue
+      type: object
+      properties:
+        text:
+          type: string
+          description: "the prescriber's sig, or directions for taking the medication"
+          example: take 1 tablet by mouth once daily
+        strengthUnit:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: unit of the dosage strength
+          example: mg
+        strengthValue:
+          type: number
+          description: value of the dosage strength
+          format: double
+          example: 100
+        amountUnit:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: unit of a single dose
+          example: puffs
+        amountValue:
+          type: number
+          description: value of a single dose
+          format: double
+          example: 2
+    Facility:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+          description: Facility Name
+          example: ABC Clinic
+        address:
+          allOf:
+            - $ref: '#/components/schemas/Address'
+            - description: Facility Address
+      description: facility where the medication was prescribed
     Gender:
       type: string
       enum:
-      - MALE
-      - FEMALE
-      - OTHER
-      - UNKNOWN
+        - MALE
+        - FEMALE
+        - OTHER
+        - UNKNOWN
     Identifier:
       required:
-      - extension
-      - root
+        - extension
+        - root
       type: object
       properties:
         root:
@@ -193,21 +269,21 @@ components:
     JsonError:
       type: object
       allOf:
-      - $ref: '#/components/schemas/AbstractResource_JsonError_'
-      - required:
-        - message
-        properties:
-          message:
-            type: string
-          logref:
-            type: string
-            nullable: true
-          path:
-            type: string
-            nullable: true
+        - $ref: '#/components/schemas/AbstractResource_JsonError_'
+        - required:
+            - message
+          properties:
+            message:
+              type: string
+            logref:
+              type: string
+              nullable: true
+            path:
+              type: string
+              nullable: true
     MediaType:
       required:
-      - name
+        - name
       type: object
       properties:
         name:
@@ -229,13 +305,13 @@ components:
         charset:
           nullable: true
           allOf:
-          - $ref: '#/components/schemas/Charset'
+            - $ref: '#/components/schemas/Charset'
         textBased:
           type: boolean
     Name:
       required:
-      - family
-      - given
+        - family
+        - given
       type: object
       properties:
         family:
@@ -281,19 +357,19 @@ components:
           type: boolean
     Patient:
       required:
-      - address
-      - birthDate
-      - gender
-      - mrn
-      - name
+        - address
+        - birthDate
+        - gender
+        - mrn
+        - name
       type: object
       properties:
         mrn:
           allOf:
-          - $ref: '#/components/schemas/Identifier'
-          - description: Patient's Medical record Number. Populated with the clinic
-              HL7 OID home community ID and the local patient ID. Must be unique per
-              patient
+            - $ref: '#/components/schemas/Identifier'
+            - description: Patient's Medical record Number. Populated with the clinic
+                HL7 OID home community ID and the local patient ID. Must be unique per
+                patient
         name:
           $ref: '#/components/schemas/Name'
         gender:
@@ -309,10 +385,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ContactPoint'
+    ProcessingResponse:
+      type: object
+      properties:
+        correlationId:
+          type: string
+          description: Unique Connective Health identifier to correlate subsequent
+            processing or troubleshooting
+          example: 9e923da0-f3cb-4d2b-9fbb-17417104ffd0
     Provider:
       required:
-      - name
-      - npi
+        - name
+        - npi
       type: object
       properties:
         npi:
@@ -332,9 +416,9 @@ components:
           $ref: '#/components/schemas/OptionalMultiValues_Resource_'
     ScheduledAppointment:
       required:
-      - patient
-      - upcomingAppointmentDate
-      - upcomingAppointmentProvider
+        - patient
+        - upcomingAppointmentDate
+        - upcomingAppointmentProvider
       type: object
       properties:
         patient:
@@ -390,6 +474,11 @@ components:
             should be populated with all known diagnoses
           items:
             $ref: '#/components/schemas/Diagnosis'
+        medications:
+          type: array
+          description: All known medications about the patient
+          items:
+            $ref: '#/components/schemas/Medication'
         directives:
           allOf:
           - $ref: '#/components/schemas/Directives'
@@ -402,6 +491,8 @@ components:
           description: Unique Connective Health identifier to correlate subsequent
             processing or troubleshooting
           example: 9e923da0-f3cb-4d2b-9fbb-17417104ffd0
+            - $ref: '#/components/schemas/Directives'
+            - description: Directives which may influence how the data is processed
   securitySchemes:
     apiKey:
       type: apiKey
