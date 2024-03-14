@@ -308,6 +308,126 @@ components:
             - $ref: '#/components/schemas/Charset'
         textBased:
           type: boolean
+    Medication:
+      required:
+        - active
+        - nameCode
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: whether this medication is still being actively used by the patient
+          example: true
+        nameCode:
+          allOf:
+            - $ref: '#/components/schemas/Code'
+            - description: the medication name code. Code system should be RxNorm if
+                possible
+              example:
+                code: "6809"
+                codeSystem: 2.16.840.1.113883.6.88
+                codeSystemName: RxNorm
+                displayName: metFORMIN
+        classCode:
+          allOf:
+            - $ref: '#/components/schemas/Code'
+            - description: the medication class code. Code system should be MED-RT if
+                possible
+              example:
+                code: N0000175565
+                codeSystem: 2.16.840.1.113883.6.345
+                codeSystemName: MED-RT
+                displayName: Biguanide
+        schedule:
+          allOf:
+            - $ref: '#/components/schemas/Code'
+            - description: the medication schedule code.
+              example:
+                code: IV
+                codeSystem: 2.16.840.1.113883.12.477
+                codeSystemName: Controlled Substance Schedule
+                displayName: Schedule IV
+        medicationRequests:
+          type: array
+          items:
+            $ref: '#/components/schemas/MedicationRequest'
+    MedicationRequest:
+      type: object
+      properties:
+        code:
+          allOf:
+            - $ref: '#/components/schemas/Code'
+            - description: the medication code. This is the specific medication including
+                form. Code system should be RxNorm if possible
+              example:
+                code: "861007"
+                codeSystem: 2.16.840.1.113883.6.88
+                codeSystemName: RxNorm
+                displayName: metFORMIN hydrochloride 500 MG Oral Tablet
+        form:
+          allOf:
+            - $ref: '#/components/schemas/Code'
+            - description: the form the medication is in. Code system should be NCI
+                Thesaurus if possible
+              example:
+                code: C42998
+                codeSystem: 2.16.840.1.113883.3.26.1.1
+                codeSystemName: NCI Thesaurus
+                displayName: tablet
+        route:
+          allOf:
+            - $ref: '#/components/schemas/Code'
+            - description: the route the medication is administered
+              example:
+                code: C38288
+                codeSystem: 2.16.840.1.113883.3.26.1.1
+                codeSystemName: NCI Thesaurus
+                displayName: oral
+        prescribedDate:
+          type: string
+          description: "the date the medication was prescribed, in ISO-8601 format\
+            \ yyyy-MM-dd"
+          format: date
+          example: 2023-12-02
+        prescriber:
+          allOf:
+            - $ref: '#/components/schemas/Provider'
+            - description: prescriber of the medication
+        facility:
+          allOf:
+            - $ref: '#/components/schemas/Facility'
+            - description: facility where the medication was prescribed
+        initialFillQuantity:
+          type: number
+          description: the quantity initially filled for the medication
+          format: double
+          example: 10
+        numberOfRefillsAllowed:
+          type: integer
+          description: the number of refills allowed for this prescription
+          format: int32
+          example: 0
+        timingEvent:
+          allOf:
+            - $ref: '#/components/schemas/TimingEvent'
+            - description: "timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
+              \ (OID 2.16.840.1.113883.4.642.3.78). Should be consistent with frequency\
+              \ if both populated"
+              example: QD
+        frequencyUnit:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: should be a unit of time as defined by http://hl7.org/fhir/ValueSet/units-of-time.
+            Should be consistent with timingEvent if both populated
+          example: d
+        frequencyValue:
+          type: number
+          description: frequency the medication should be taken. Should be consistent
+            with timingEvent if both populated
+          format: double
+          example: 1
+        dosageInstruction:
+          $ref: '#/components/schemas/Dosage'
     Name:
       required:
         - family
@@ -385,10 +505,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ContactPoint'
-      description: "Patient to add to the patient panel. Patients on the panel will\
-        \ be monitored via ADT events. If this patient already exists, it will be\
-        \ overwritten. Patients are never deleted; to remove a patient from the panel,\
-        \ set the endDate appropriately."
+      description: Patient to be processed
     ProcessingResponse:
       type: object
       properties:
@@ -411,6 +528,7 @@ components:
           example: "1234567890"
         name:
           $ref: '#/components/schemas/Name'
+      description: "A medical provider"
     Resource:
       type: object
       properties:
@@ -485,22 +603,31 @@ components:
             $ref: '#/components/schemas/Medication'
         directives:
           allOf:
-          - $ref: '#/components/schemas/Directives'
-          - description: Directives which may influence how the data is processed
-    ScheduledAppointmentResponse:
-      type: object
-      properties:
-        correlationId:
-          type: string
-          description: Unique Connective Health identifier to correlate subsequent
-            processing or troubleshooting
-          example: 9e923da0-f3cb-4d2b-9fbb-17417104ffd0
             - $ref: '#/components/schemas/Directives'
             - description: Directives which may influence how the data is processed
-            - $ref: '#/components/schemas/Directives'
-            - description: Directives which may influence how the data is processed
-            - $ref: '#/components/schemas/Directives'
-            - description: Directives which may influence how the data is processed
+    TimingEvent:
+      type: string
+      description: "timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
+        \ (OID 2.16.840.1.113883.4.642.3.78). Should be consistent with frequency\
+        \ if both populated"
+      example: QD
+      enum:
+        - BID
+        - TID
+        - QID
+        - AM
+        - PM
+        - QD
+        - QOD
+        - Q1H
+        - Q2H
+        - Q3H
+        - Q4H
+        - Q6H
+        - Q8H
+        - BED
+        - WK
+        - M
   securitySchemes:
     apiKey:
       type: apiKey
