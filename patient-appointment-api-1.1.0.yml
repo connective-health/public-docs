@@ -499,6 +499,8 @@ components:
             - description: Directives which may influence how the data is processed
             - $ref: '#/components/schemas/Directives'
             - description: Directives which may influence how the data is processed
+            - $ref: '#/components/schemas/Directives'
+            - description: Directives which may influence how the data is processed
   securitySchemes:
     apiKey:
       type: apiKey
