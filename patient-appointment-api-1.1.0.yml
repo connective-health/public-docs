@@ -385,6 +385,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ContactPoint'
+      description: "Patient to add to the patient panel. Patients on the panel will\
+        \ be monitored via ADT events. If this patient already exists, it will be\
+        \ overwritten. Patients are never deleted; to remove a patient from the panel,\
+        \ set the endDate appropriately."
     ProcessingResponse:
       type: object
       properties:
@@ -491,6 +495,8 @@ components:
           description: Unique Connective Health identifier to correlate subsequent
             processing or troubleshooting
           example: 9e923da0-f3cb-4d2b-9fbb-17417104ffd0
+            - $ref: '#/components/schemas/Directives'
+            - description: Directives which may influence how the data is processed
             - $ref: '#/components/schemas/Directives'
             - description: Directives which may influence how the data is processed
   securitySchemes:
