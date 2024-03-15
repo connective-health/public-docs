@@ -1,0 +1,633 @@
+openapi: 3.0.1
+info:
+  title: Processing Request API
+  description: API for processing of a patient
+  termsOfService: https://connectivehealth.io/website-terms-of-use/
+  contact:
+    name: Connective Health Tech Support
+    url: https://connectivehealth.io
+    email: techsupport@connectivehealth.io
+  version: 1.2.0
+servers:
+- url: https://processing-request-staging.connectivehealth.io/
+  description: Customer testing site. Test data only. No PHI.
+security:
+  - apiKey: [ ]
+paths:
+  /v1/scheduled-appointment:
+    post:
+      tags:
+        - Scheduled Appointments
+      summary: Initiate processing of a patient
+      description: |-
+        Initiates the asynchronous processing of a patient using multiple clinical data networks.
+
+
+        **Populate all known data**. It is very important for processing that as much information as possible is supplied.
+      operationId: createScheduledAppointment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduledAppointment'
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingResponse'
+        "400":
+          description: Validation problems
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonError'
+        "401":
+          description: Missing or invalid apikey
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingResponse'
+components:
+  schemas:
+    AbstractResource_JsonError_:
+      type: object
+      properties:
+        _links:
+          type: object
+          additionalProperties: true
+        _embedded:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/Resource'
+    Address:
+      required:
+        - zip
+      type: object
+      properties:
+        lines:
+          type: array
+          description: Street lines of the address
+          example: "[\"123 Main St\", \"Suite 567\"]"
+          items:
+            type: string
+        city:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: The city
+          example: Minneapolis
+        state:
+          pattern: "^[A-Za-z]{2}$|\\s*"
+          type: string
+          description: State code abbreviation
+          example: MN
+        zip:
+          pattern: "^\\d{5}$"
+          type: string
+          description: 5-digit zip code
+          example: "55401"
+    Charset:
+      type: object
+      properties:
+        registered:
+          type: boolean
+    Code:
+      required:
+        - displayName
+      type: object
+      properties:
+        code:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: The specific code from a code system
+          example: N0000175497
+        codeSystem:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: Code system OID. Must be populated if known
+          example: 2.16.840.1.113883.6.345
+        codeSystemName:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: Human-readable name of the code system name if known
+          example: MED-RT
+        displayName:
+          minLength: 1
+          type: string
+          description: Human-readable description of the code
+          example: Penicillin-class Antibacterial
+      description: Medication name code. Code system should be RxNorm if possible
+      example:
+        code: "6809"
+        codeSystem: 2.16.840.1.113883.6.88
+        codeSystemName: RxNorm
+        displayName: metFORMIN
+    ContactPoint:
+      required:
+        - contactPointSystem
+        - contactPointUse
+        - value
+      type: object
+      properties:
+        value:
+          minLength: 1
+          type: string
+          description: Phone number or email address
+          example: "9525551234"
+        contactPointSystem:
+          allOf:
+            - $ref: '#/components/schemas/ContactPointSystem'
+            - description: Type of contact
+              example: PHONE
+        contactPointUse:
+          allOf:
+            - $ref: '#/components/schemas/ContactPointUse'
+            - description: Use for the contact
+              example: HOME
+    ContactPointSystem:
+      type: string
+      description: Type of contact
+      example: PHONE
+      enum:
+        - PHONE
+        - EMAIL
+    ContactPointUse:
+      type: string
+      description: Use for the contact
+      example: HOME
+      enum:
+        - HOME
+        - WORK
+        - MOBILE
+    Diagnosis:
+      required:
+        - code
+        - displayName
+      type: object
+      properties:
+        code:
+          minLength: 1
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: The diagnosis code including punctuation
+          example: E66.01
+        displayName:
+          minLength: 1
+          type: string
+          description: The display value for the diagnosis
+          example: Morbid (severe) obesity due to excess calories
+        date:
+          type: string
+          description: Date of the problem (onset or diagnosed)
+          format: date
+          example: 2022-12-12
+    Directives:
+      type: object
+      properties:
+        newPatient:
+          type: boolean
+          description: Whether patient is new to the clinic (first time patient)
+          example: false
+          default: false
+      description: Directives which may influence how the data is processed
+    Dosage:
+      required:
+        - amountValue
+        - strengthValue
+      type: object
+      properties:
+        text:
+          type: string
+          description: "Prescriber's sig, or directions for taking the medication"
+          example: take 1 tablet by mouth once daily
+        strengthUnit:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: Unit of the dosage strength
+          example: mg
+        strengthValue:
+          type: number
+          description: Value of the dosage strength
+          format: double
+          example: 100
+        amountUnit:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: Unit of a single dose
+          example: puffs
+        amountValue:
+          type: number
+          description: Value of a single dose
+          format: double
+          example: 2
+    Facility:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+          description: Facility Name
+          example: ABC Clinic
+        address:
+          allOf:
+            - $ref: '#/components/schemas/Address'
+            - description: Facility Address
+      description: Facility where the medication was prescribed
+    Gender:
+      type: string
+      enum:
+        - MALE
+        - FEMALE
+        - OTHER
+        - UNKNOWN
+    Identifier:
+      required:
+        - extension
+        - root
+      type: object
+      properties:
+        root:
+          minLength: 1
+          type: string
+          description: "Identifier's root, generally an OID"
+          example: 1.2.3.4
+        extension:
+          minLength: 1
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: Identifier value or extension
+          example: ABC123
+      description: Patient's Medical record Number. Populated with the clinic HL7
+        OID home community ID and the local patient ID. Must be unique per patient
+    JsonError:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AbstractResource_JsonError_'
+        - required:
+            - message
+          properties:
+            message:
+              type: string
+            logref:
+              type: string
+              nullable: true
+            path:
+              type: string
+              nullable: true
+    MediaType:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        subtype:
+          type: string
+        extension:
+          type: string
+        parameters:
+          $ref: '#/components/schemas/OptionalValues_String_'
+        quality:
+          type: string
+        qualityAsNumber:
+          type: number
+        version:
+          type: string
+        charset:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/Charset'
+        textBased:
+          type: boolean
+    Medication:
+      required:
+        - active
+        - nameCode
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: Whether this medication is still being actively used by the
+            patient
+          example: true
+        nameCode:
+          allOf:
+            - $ref: '#/components/schemas/Code'
+            - description: Medication name code. Code system should be RxNorm if possible
+              example:
+                code: "6809"
+                codeSystem: 2.16.840.1.113883.6.88
+                codeSystemName: RxNorm
+                displayName: metFORMIN
+        classCode:
+          allOf:
+            - $ref: '#/components/schemas/Code'
+            - description: Medication class code. Code system should be MED-RT if possible
+              example:
+                code: N0000175565
+                codeSystem: 2.16.840.1.113883.6.345
+                codeSystemName: MED-RT
+                displayName: Biguanide
+        schedule:
+          allOf:
+            - $ref: '#/components/schemas/Code'
+            - description: Medication schedule code.
+              example:
+                code: IV
+                codeSystem: 2.16.840.1.113883.12.477
+                codeSystemName: Controlled Substance Schedule
+                displayName: Schedule IV
+        medicationRequests:
+          type: array
+          items:
+            $ref: '#/components/schemas/MedicationRequest'
+    MedicationRequest:
+      type: object
+      properties:
+        code:
+          allOf:
+            - $ref: '#/components/schemas/Code'
+            - description: Medication code. This is the specific medication including
+                form. Code system should be RxNorm if possible
+              example:
+                code: "861007"
+                codeSystem: 2.16.840.1.113883.6.88
+                codeSystemName: RxNorm
+                displayName: metFORMIN hydrochloride 500 MG Oral Tablet
+        form:
+          allOf:
+            - $ref: '#/components/schemas/Code'
+            - description: Form the medication is in. Code system should be NCI Thesaurus
+                if possible
+              example:
+                code: C42998
+                codeSystem: 2.16.840.1.113883.3.26.1.1
+                codeSystemName: NCI Thesaurus
+                displayName: tablet
+        route:
+          allOf:
+            - $ref: '#/components/schemas/Code'
+            - description: Route by which the medication is administered
+              example:
+                code: C38288
+                codeSystem: 2.16.840.1.113883.3.26.1.1
+                codeSystemName: NCI Thesaurus
+                displayName: oral
+        prescribedDate:
+          type: string
+          description: "Date the medication was prescribed, in ISO-8601 format yyyy-MM-dd"
+          format: date
+          example: 2023-12-02
+        prescriber:
+          allOf:
+            - $ref: '#/components/schemas/Provider'
+            - description: Prescriber of the medication
+        facility:
+          allOf:
+            - $ref: '#/components/schemas/Facility'
+            - description: Facility where the medication was prescribed
+        initialFillQuantity:
+          type: number
+          description: Quantity initially filled for the medication
+          format: double
+          example: 10
+        numberOfRefillsAllowed:
+          type: integer
+          description: Number of refills allowed for this prescription
+          format: int32
+          example: 0
+        timingEvent:
+          allOf:
+            - $ref: '#/components/schemas/TimingEvent'
+            - description: "Timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
+              \ (OID 2.16.840.1.113883.4.642.3.78). Should be consistent with frequency\
+              \ if both populated"
+              example: QD
+        frequencyUnit:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: Unit of time as defined by http://hl7.org/fhir/ValueSet/units-of-time.
+            Should be consistent with timingEvent if both populated
+          example: d
+        frequencyValue:
+          type: number
+          description: Frequency at which the medication should be taken. Should be
+            consistent with timingEvent if both populated
+          format: double
+          example: 1
+        dosageInstruction:
+          $ref: '#/components/schemas/Dosage'
+    Name:
+      required:
+        - family
+        - given
+      type: object
+      properties:
+        family:
+          minLength: 1
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: Family name (last name)
+          example: Johnson
+        given:
+          minItems: 1
+          type: array
+          description: First and/or middle names
+          example: "[\"John\", \"Michael\"]"
+          items:
+            type: string
+        prefix:
+          type: string
+          description: Name prefix
+          example: Mr.
+        suffix:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: Name suffix
+          example: Jr.
+    OptionalMultiValues_Link_:
+      $ref: '#/components/schemas/OptionalValues_List_Link__'
+    OptionalMultiValues_Resource_:
+      $ref: '#/components/schemas/OptionalValues_List_Resource__'
+    OptionalValues_List_Link__:
+      type: object
+      properties:
+        empty:
+          type: boolean
+    OptionalValues_List_Resource__:
+      type: object
+      properties:
+        empty:
+          type: boolean
+    OptionalValues_String_:
+      type: object
+      properties:
+        empty:
+          type: boolean
+    Patient:
+      required:
+        - address
+        - birthDate
+        - gender
+        - mrn
+        - name
+      type: object
+      properties:
+        mrn:
+          allOf:
+            - $ref: '#/components/schemas/Identifier'
+            - description: Patient's Medical record Number. Populated with the clinic
+                HL7 OID home community ID and the local patient ID. Must be unique per
+                patient
+        name:
+          $ref: '#/components/schemas/Name'
+        gender:
+          $ref: '#/components/schemas/Gender'
+        birthDate:
+          type: string
+          description: Birth date of the patient in ISO-8601 format yyyy-MM-dd
+          format: date
+          example: 1992-04-09
+        address:
+          $ref: '#/components/schemas/Address'
+        contactPoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactPoint'
+      description: Patient to be processed
+    ProcessingResponse:
+      type: object
+      properties:
+        correlationId:
+          type: string
+          description: Unique Connective Health identifier to correlate subsequent
+            processing or troubleshooting
+          example: 9e923da0-f3cb-4d2b-9fbb-17417104ffd0
+    Provider:
+      required:
+        - name
+        - npi
+      type: object
+      properties:
+        npi:
+          maxLength: 10
+          minLength: 10
+          type: string
+          description: NPI value
+          example: "1234567890"
+        name:
+          $ref: '#/components/schemas/Name'
+      description: A medical provider
+    Resource:
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/OptionalMultiValues_Link_'
+        _embedded:
+          $ref: '#/components/schemas/OptionalMultiValues_Resource_'
+    ScheduledAppointment:
+      required:
+        - patient
+        - upcomingAppointmentDate
+        - upcomingAppointmentProvider
+      type: object
+      properties:
+        patient:
+          $ref: '#/components/schemas/Patient'
+        upcomingAppointmentDate:
+          type: string
+          description: Date of the appointment in ISO-8601 format yyyy-MM-dd
+          format: date
+          example: 2024-11-05
+        upcomingAppointmentProvider:
+          $ref: '#/components/schemas/Provider'
+        clinicName:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: "Name of the clinic the patient is being seen at, or the organization\
+            \ requesting the data. Customer name will be used if not populated"
+          example: Simple Clinic Name
+        clinicNpi:
+          maxLength: 10
+          minLength: 10
+          type: string
+          description: Facility's NPI if known
+          example: "1234567890"
+        responseDirectAddress:
+          type: string
+          description: "Direct Address to return documents to. Typically, populate\
+            \ this OR responseFaxNumber"
+          format: email
+          example: contact@yourdomain.com
+        responseFaxNumber:
+          maxLength: 10
+          minLength: 10
+          type: string
+          description: "Fax number to send response documents to. Typically, populate\
+            \ this OR responseDirectAddress"
+          example: "6125551234"
+        responseFriendlyName:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: Human-readable name to send response message to
+          example: Heart Clinic
+        batchId:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: Identifier which can be used to logically group requests together.
+            Do not populate if you do not need to group requests together. Will default
+            to a UUID it not populated
+          example: BATCH-123
+        activeIcd10Diagnoses:
+          type: array
+          description: All active diagnoses (problems) known about the patient. Must
+            all be ICD-10 codes. If the patient is an existing patient then this list
+            should be populated with all known diagnoses
+          items:
+            $ref: '#/components/schemas/Diagnosis'
+        medications:
+          type: array
+          description: All known medications about the patient
+          items:
+            $ref: '#/components/schemas/Medication'
+        directives:
+          allOf:
+            - $ref: '#/components/schemas/Directives'
+            - description: Directives which may influence how the data is processed
+    TimingEvent:
+      type: string
+      description: "Timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
+        \ (OID 2.16.840.1.113883.4.642.3.78). Should be consistent with frequency\
+        \ if both populated"
+      example: QD
+      enum:
+        - BID
+        - TID
+        - QID
+        - AM
+        - PM
+        - QD
+        - QOD
+        - Q1H
+        - Q2H
+        - Q3H
+        - Q4H
+        - Q6H
+        - Q8H
+        - BED
+        - WK
+        - M
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: API Key
+      name: apiKey
+      in: header
