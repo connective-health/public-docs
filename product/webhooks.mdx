@@ -1,0 +1,76 @@
+---
+title: 'Webhooks'
+description: 'EARLY ADOPTER: Important Event Webhook Callbacks'
+icon: 'webhook'
+---
+
+<Warning>This feature is still in early adopter status and is subject to change</Warning>
+
+
+# Overview
+
+Webhooks are a technique for informing a system or user of an event that has taken place.
+This type of architecture is especially helpful for an asynchronous system like Connective Health's products.
+
+Our implementation is very loosely based on the open source [Standard Webhooks](https://www.standardwebhooks.com)
+specification that is in active development.
+
+Each webhook is implemented as an `HTTP POST` to a URL (or URLs) specified by the customer. The basic content
+of each POST will be this. The `type`, `correlationId`, and `timestamp` will always be included. The `data` section
+is optional, but if specified will contain additional information specific to the webhook type.
+
+```json Webhook Example
+{
+  "type": "patient.found",
+  "correlationId": "4352bfba-506c-4ffc-b1ba-78e56d0d4ddc",
+  "timestamp": "2024-03-25T19:44:46.977488Z",
+  "data": {
+    "key": "value",
+    "anotherKey": "value2"
+  }
+}
+```
+
+# Webhooks
+
+## Event Types
+
+Please contact your account manager if there are other event types you would like to see supported.
+
+| Event Type                  | Status    | Description                                                                                                                                                   |
+|-----------------------------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `patient.insufficientData`  | Available | This event may be due to several issues including the patient not being found or there not being sufficient data for the patient for the data to be delivered |
+| `patient.found`             | Coming    | The patient was identified via one of our connected networks                                                                                                  |
+| `document.deliveryComplete` | Coming    | A document (either PDF or FHIR bundle) was successfully delivered                                                                                             |
+
+
+## Security
+
+Currently, no authentication is supported for the webhook content. The `correlationId` should be validated against
+previously sent customer records if necessary.
+
+Only `https` URLs are supported.
+
+## Retries
+
+Webhooks are processed on a best effort basis. If there is a communication error (anything other than an HTTP 2xx response)
+then the message will be retried several times with [progressively longer time](https://en.wikipedia.org/wiki/Exponential_backoff) between retries.
+
+## Special Considerations
+
+### Missing Delivery
+
+In certain error situations a webhook may not be delivered as expected. This should be rare, but it is possible.
+
+### Multiple Deliveries
+
+Webhooks are intended to be at least once semantics. While we strive to only deliver each webhook exactly once, for a
+variety of reasons a single webhook may be sent multiple times. Care should be taken by the receiver to properly handle
+this situation.
+
+### Erroneous Delivery
+
+In extremely rare circumstances a webhook may be sent and then later found to be incorrect. An example would be the
+delivery of a `patient.insufficientData` webhook being delivered, but due to a system error it was found that the patient
+was able to be found and processed successfully. In this rare case, the webhook may be sent but a PDF is later delivered.
+
