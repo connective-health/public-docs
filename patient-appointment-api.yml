@@ -336,7 +336,7 @@ components:
                 codeSystem: 2.16.840.1.113883.6.345
                 codeSystemName: MED-RT
                 displayName: Biguanide
-        schedule:
+        scheduleCode:
           allOf:
             - $ref: '#/components/schemas/Code'
             - description: Medication schedule code.
