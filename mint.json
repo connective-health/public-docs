@@ -53,7 +53,8 @@
         "product/risk-adjustment",
         "product/quality-gap-closure",
         "product/fhir-data",
-        "product/structured-reports"
+        "product/structured-reports",
+        "product/webhooks"
       ]
     },
     {
