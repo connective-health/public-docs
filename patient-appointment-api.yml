@@ -9,27 +9,32 @@ info:
     email: techsupport@connectivehealth.io
   version: 1.2.0
 servers:
-- url: https://processing-request-staging.connectivehealth.io/
-  description: Customer testing site. Test data only. No PHI.
+  - url: https://processing-request-staging.connectivehealth.io/
+    description: Customer testing site. Test data only. No PHI.
 security:
-  - apiKey: [ ]
+  - apiKey: []
 paths:
-  /v1/scheduled-appointment:
+  /v1/medication-history/load-file:
     post:
       tags:
-        - Scheduled Appointments
-      summary: Initiate processing of a patient
+        - Medication History
+      summary: Bulk Patient Panel File Load
       description: |-
-        Initiates the asynchronous processing of a patient using multiple clinical data networks.
-
-
-        **Populate all known data**. It is very important for processing that as much information as possible is supplied.
-      operationId: createScheduledAppointment
+        Submits a file of patient demographics which will be submitted for processing of medication history information in a batch manner.
+                    File must conform to the Surescripts Medication History Patient Panel Load Format. The file must be a ZIP, GZIP, or BZIP2 type file with a single file within the compressed archive.
+      operationId: processMedicationHistoryLoadFile
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ScheduledAppointment'
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+            encoding:
+              file:
+                contentType: application/octet-stream
         required: true
       responses:
         "200":
@@ -37,19 +42,101 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProcessingResponse'
+                $ref: "#/components/schemas/ProcessingResponse"
         "400":
           description: Validation problems
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JsonError'
+                $ref: "#/components/schemas/JsonError"
         "401":
           description: Missing or invalid apikey
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProcessingResponse'
+                $ref: "#/components/schemas/ProcessingResponse"
+  /v1/patient-panel:
+    post:
+      tags:
+        - ADT Patient Panel
+      summary: Panel Registration
+      description: "\n# Data Requirements\n\n**Populate all known data**. It is required\
+        \ for processing that as much information as possible is supplied.\n \nAll\
+        \ active diagnoses and medications for a patient should be supplied in every\
+        \ API request. \nThat information is used to satisfy reciprocity requirements\
+        \ of the various health information exchanges \nthat Connective Health participates\
+        \ in. Not populating known diagnoses and medications for each patient would\
+        \ \nbe a violation of health information exchange reciprocity rules which\
+        \ could result in the termination of information exchange.\n\n## Overview\n\
+        Manage a patient's registration on the Patient Panel for ADT monitoring. If\
+        \ an ADT notification event occurs, the patient will be processed."
+      operationId: processAdtPanelPatient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdtPanelPatient"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+        "400":
+          description: Validation problems
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonError"
+        "401":
+          description: Missing or invalid apikey
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+  /v1/scheduled-appointment:
+    post:
+      tags:
+        - Scheduled Appointments
+      summary: Patient Data Processing
+      description: "# Data Requirements\n\n**Populate all known data**. It is required\
+        \ for processing that as much information as possible is supplied.\n \nAll\
+        \ active diagnoses and medications for a patient should be supplied in every\
+        \ API request. \nThat information is used to satisfy reciprocity requirements\
+        \ of the various health information exchanges \nthat Connective Health participates\
+        \ in. Not populating known diagnoses and medications for each patient would\
+        \ \nbe a violation of health information exchange reciprocity rules which\
+        \ could result in the termination of information exchange.\n\n## Overview\n\
+        Standard processing for clinical patient information, both summarized and\
+        \ complete information is supported."
+      operationId: createScheduledAppointment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScheduledAppointment"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+        "400":
+          description: Validation problems
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonError"
+        "401":
+          description: Missing or invalid apikey
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
 components:
   schemas:
     AbstractResource_JsonError_:
@@ -63,7 +150,7 @@ components:
           additionalProperties:
             type: array
             items:
-              $ref: '#/components/schemas/Resource'
+              $ref: "#/components/schemas/Resource"
     Address:
       required:
         - zip
@@ -90,6 +177,59 @@ components:
           type: string
           description: 5-digit zip code
           example: "55401"
+    AdtPanelPatient:
+      required:
+        - patient
+        - provider
+      type: object
+      properties:
+        patient:
+          allOf:
+            - $ref: "#/components/schemas/Patient"
+            - description: "Patient to add to the patient panel. Patients on the panel\
+              \ will be monitored via ADT events. If this patient already exists,\
+              \ it will be overwritten. Patients are never deleted; to remove a patient\
+              \ from the panel, set the endDate appropriately."
+        startDate:
+          type: string
+          description: "Date the patient will start being monitored, in ISO-8601 format\
+            \ yyyy-MM-dd. Only panels generated on or after this date will include\
+            \ this patient."
+          format: date
+          example: 2024-11-05
+        endDate:
+          type: string
+          description: "Date the patient will stop being monitored, in ISO-8601 format\
+            \ yyyy-MM-dd. If not null, only panels generated on or before this date\
+            \ will include this patient"
+          format: date
+          nullable: true
+          example: 2025-11-05
+        batchId:
+          pattern: "[^<>\"%;&+@:]*$"
+          type: string
+          description: Identifier which can be used to logically group requests together.
+            Do not populate if you do not need to group requests together. Will default
+            to a UUID it not populated
+          example: BATCH-123
+        provider:
+          allOf:
+            - $ref: "#/components/schemas/Provider"
+            - description: "This will be the requesting provider for medical records\
+              \ required to generate a care summary (or FHIR bundle, etc.) as the\
+              \ result of an ADT event"
+        activeIcd10Diagnoses:
+          type: array
+          description: All active diagnoses (problems) known about the patient. Must
+            all be ICD-10 codes. If the patient is an existing patient then this list
+            should be populated with all known diagnoses
+          items:
+            $ref: "#/components/schemas/Diagnosis"
+        medications:
+          type: array
+          description: All known medications for the patient
+          items:
+            $ref: "#/components/schemas/Medication"
     Charset:
       type: object
       properties:
@@ -140,12 +280,12 @@ components:
           example: "9525551234"
         contactPointSystem:
           allOf:
-            - $ref: '#/components/schemas/ContactPointSystem'
+            - $ref: "#/components/schemas/ContactPointSystem"
             - description: Type of contact
               example: PHONE
         contactPointUse:
           allOf:
-            - $ref: '#/components/schemas/ContactPointUse'
+            - $ref: "#/components/schemas/ContactPointUse"
             - description: Use for the contact
               example: HOME
     ContactPointSystem:
@@ -236,7 +376,7 @@ components:
           example: ABC Clinic
         address:
           allOf:
-            - $ref: '#/components/schemas/Address'
+            - $ref: "#/components/schemas/Address"
             - description: Facility Address
       description: Facility where the medication was prescribed
     Gender:
@@ -268,7 +408,7 @@ components:
     JsonError:
       type: object
       allOf:
-        - $ref: '#/components/schemas/AbstractResource_JsonError_'
+        - $ref: "#/components/schemas/AbstractResource_JsonError_"
         - required:
             - message
           properties:
@@ -294,7 +434,7 @@ components:
         extension:
           type: string
         parameters:
-          $ref: '#/components/schemas/OptionalValues_String_'
+          $ref: "#/components/schemas/OptionalValues_String_"
         quality:
           type: string
         qualityAsNumber:
@@ -304,7 +444,7 @@ components:
         charset:
           nullable: true
           allOf:
-            - $ref: '#/components/schemas/Charset'
+            - $ref: "#/components/schemas/Charset"
         textBased:
           type: boolean
     Medication:
@@ -320,7 +460,7 @@ components:
           example: true
         nameCode:
           allOf:
-            - $ref: '#/components/schemas/Code'
+            - $ref: "#/components/schemas/Code"
             - description: Medication name code. Code system should be RxNorm if possible
               example:
                 code: "6809"
@@ -329,7 +469,7 @@ components:
                 displayName: metFORMIN
         classCode:
           allOf:
-            - $ref: '#/components/schemas/Code'
+            - $ref: "#/components/schemas/Code"
             - description: Medication class code. Code system should be MED-RT if possible
               example:
                 code: N0000175565
@@ -338,7 +478,7 @@ components:
                 displayName: Biguanide
         scheduleCode:
           allOf:
-            - $ref: '#/components/schemas/Code'
+            - $ref: "#/components/schemas/Code"
             - description: Medication schedule code.
               example:
                 code: IV
@@ -348,13 +488,13 @@ components:
         medicationRequests:
           type: array
           items:
-            $ref: '#/components/schemas/MedicationRequest'
+            $ref: "#/components/schemas/MedicationRequest"
     MedicationRequest:
       type: object
       properties:
         code:
           allOf:
-            - $ref: '#/components/schemas/Code'
+            - $ref: "#/components/schemas/Code"
             - description: Medication code. This is the specific medication including
                 form. Code system should be RxNorm if possible
               example:
@@ -364,7 +504,7 @@ components:
                 displayName: metFORMIN hydrochloride 500 MG Oral Tablet
         form:
           allOf:
-            - $ref: '#/components/schemas/Code'
+            - $ref: "#/components/schemas/Code"
             - description: Form the medication is in. Code system should be NCI Thesaurus
                 if possible
               example:
@@ -374,7 +514,7 @@ components:
                 displayName: tablet
         route:
           allOf:
-            - $ref: '#/components/schemas/Code'
+            - $ref: "#/components/schemas/Code"
             - description: Route by which the medication is administered
               example:
                 code: C38288
@@ -388,11 +528,11 @@ components:
           example: 2023-12-02
         prescriber:
           allOf:
-            - $ref: '#/components/schemas/Provider'
+            - $ref: "#/components/schemas/Provider"
             - description: Prescriber of the medication
         facility:
           allOf:
-            - $ref: '#/components/schemas/Facility'
+            - $ref: "#/components/schemas/Facility"
             - description: Facility where the medication was prescribed
         initialFillQuantity:
           type: number
@@ -406,7 +546,7 @@ components:
           example: 0
         timingEvent:
           allOf:
-            - $ref: '#/components/schemas/TimingEvent'
+            - $ref: "#/components/schemas/TimingEvent"
             - description: "Timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
               \ (OID 2.16.840.1.113883.4.642.3.78). Should be consistent with frequency\
               \ if both populated"
@@ -424,7 +564,7 @@ components:
           format: double
           example: 1
         dosageInstruction:
-          $ref: '#/components/schemas/Dosage'
+          $ref: "#/components/schemas/Dosage"
     Name:
       required:
         - family
@@ -454,9 +594,9 @@ components:
           description: Name suffix
           example: Jr.
     OptionalMultiValues_Link_:
-      $ref: '#/components/schemas/OptionalValues_List_Link__'
+      $ref: "#/components/schemas/OptionalValues_List_Link__"
     OptionalMultiValues_Resource_:
-      $ref: '#/components/schemas/OptionalValues_List_Resource__'
+      $ref: "#/components/schemas/OptionalValues_List_Resource__"
     OptionalValues_List_Link__:
       type: object
       properties:
@@ -483,25 +623,25 @@ components:
       properties:
         mrn:
           allOf:
-            - $ref: '#/components/schemas/Identifier'
+            - $ref: "#/components/schemas/Identifier"
             - description: Patient's Medical record Number. Populated with the clinic
                 HL7 OID home community ID and the local patient ID. Must be unique per
                 patient
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
         gender:
-          $ref: '#/components/schemas/Gender'
+          $ref: "#/components/schemas/Gender"
         birthDate:
           type: string
           description: Birth date of the patient in ISO-8601 format yyyy-MM-dd
           format: date
           example: 1992-04-09
         address:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         contactPoints:
           type: array
           items:
-            $ref: '#/components/schemas/ContactPoint'
+            $ref: "#/components/schemas/ContactPoint"
       description: Patient to be processed
     ProcessingResponse:
       type: object
@@ -524,15 +664,15 @@ components:
           description: NPI value
           example: "1234567890"
         name:
-          $ref: '#/components/schemas/Name'
+          $ref: "#/components/schemas/Name"
       description: A medical provider
     Resource:
       type: object
       properties:
         _links:
-          $ref: '#/components/schemas/OptionalMultiValues_Link_'
+          $ref: "#/components/schemas/OptionalMultiValues_Link_"
         _embedded:
-          $ref: '#/components/schemas/OptionalMultiValues_Resource_'
+          $ref: "#/components/schemas/OptionalMultiValues_Resource_"
     ScheduledAppointment:
       required:
         - patient
@@ -541,14 +681,14 @@ components:
       type: object
       properties:
         patient:
-          $ref: '#/components/schemas/Patient'
+          $ref: "#/components/schemas/Patient"
         upcomingAppointmentDate:
           type: string
           description: Date of the appointment in ISO-8601 format yyyy-MM-dd
           format: date
           example: 2024-11-05
         upcomingAppointmentProvider:
-          $ref: '#/components/schemas/Provider'
+          $ref: "#/components/schemas/Provider"
         clinicName:
           pattern: "[^<>\"%;&+@:]*$"
           type: string
@@ -584,7 +724,7 @@ components:
           type: string
           description: Identifier which can be used to logically group requests together.
             Do not populate if you do not need to group requests together. Will default
-            to a UUID it not populated
+            to a UUID if not populated
           example: BATCH-123
         activeIcd10Diagnoses:
           type: array
@@ -592,15 +732,15 @@ components:
             all be ICD-10 codes. If the patient is an existing patient then this list
             should be populated with all known diagnoses
           items:
-            $ref: '#/components/schemas/Diagnosis'
+            $ref: "#/components/schemas/Diagnosis"
         medications:
           type: array
           description: All known medications about the patient
           items:
-            $ref: '#/components/schemas/Medication'
+            $ref: "#/components/schemas/Medication"
         directives:
           allOf:
-            - $ref: '#/components/schemas/Directives'
+            - $ref: "#/components/schemas/Directives"
             - description: Directives which may influence how the data is processed
     TimingEvent:
       type: string

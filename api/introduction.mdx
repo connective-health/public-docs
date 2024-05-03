@@ -1,8 +1,15 @@
 ---
-title: 'Requirements'
-description: 'Requirements for connecting to a Connective Health APIs'
+title: 'API Introduction'
+description: 'Connective Health Patient Processing APIs'
 icon: 'book'
 ---
+
+# Welcome
+
+These are the APIs to be utilized when initiating patient processing.
+
+These APIs are largely asynchronous, as patient data is not immediately returned
+to the client. Please contact Connective Health if you have any questions.
 
 # Security
 
@@ -18,7 +25,7 @@ If utilizing a Connective Health API, your system must be configured to work wit
 
 ## Authentication
 
-All API endpoints are authenticated using an API Key which will be provided to you upon initiation of a pilot. 
+All API endpoints are authenticated using an API Key which will be provided to you upon initiation of a pilot.
 
 This key should be provided as an HTTP header with every request.
 
@@ -34,4 +41,4 @@ In general, Connective Health will impose rate limits on all API endpoints.
 
 This is for both your protection (avoiding unexpected costs) and ours (system instability).
 These limits are not intended to impose undo restrictions on your system and we will work with you on appropriate values.
-If you reach 
+If you reach
