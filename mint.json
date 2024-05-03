@@ -25,30 +25,26 @@
       "url": "mailto:techsupport@connectivehealth.io"
     }
   ],
-  "tabs": [
-    {
-      "name": "Patient Processing API",
-      "url": "scheduled-appointments"
-    }
-  ],
+  "tabs": [],
   "anchors": [
     {
-      "name": "Patient Processing API",
-      "icon": "hospital-user",
-      "url": "scheduled-appointments"
+      "name": "Home",
+      "icon": "house-user",
+      "url": "introduction"
     }
   ],
   "navigation": [
     {
       "group": "Welcome",
       "pages": [
-        "introduction"
+        "introduction",
+        "product/introduction",
+        "implementation/pilot-process"
       ]
     },
     {
       "group": "Product",
       "pages": [
-        "product/introduction",
         "product/patient-care-summary",
         "product/risk-adjustment",
         "product/quality-gap-closure",
@@ -60,23 +56,14 @@
     {
       "group": "Implementation",
       "pages": [
-        "implementation/getting-started",
-        "implementation/integration-options",
         "implementation/sample-project-steps",
-        "implementation/pilot-process"
-      ]
-    },
-    {
-      "group": "Patient Processing",
-      "pages": [
-        "scheduled-appointments/introduction",
-        "scheduled-appointments/initiate-processing-of-a-patient"
-      ]
-    },
-    {
-      "group": "Development",
-      "pages": [
-        "development/requirements",
+        {
+          "group": "Request Options",
+          "pages": [
+            "implementation/ehr-integration",
+            "implementation/api-integration"
+          ]
+        },
         {
           "group": "Response Options",
           "pages": [
@@ -84,6 +71,30 @@
             "responses/fax",
             "responses/cloud-storage"
           ]
+        }
+      ]
+    },
+    {
+      "group": "APIs",
+      "pages": [
+        "api/introduction",
+        {
+          "group": "Clinical Data",
+          "pages": [
+            "scheduled-appointments/patient-data-processing"
+          ]
+        },
+        {
+          "group": "ADT Patient Panel",
+          "pages": [
+            "adt-patient-panel/panel-registration"
+          ]
+        },
+        {
+          "group": "Medication History",
+          "pages": [
+            "medication-history/bulk-patient-panel-file-load"
+              ]
         }
       ]
     }
