@@ -77,7 +77,7 @@
     {
       "group": "APIs",
       "pages": [
-        "api/introduction",
+        "api-reference/introduction",
         {
           "group": "Clinical Data",
           "pages": [
@@ -94,7 +94,7 @@
           "group": "Medication History",
           "pages": [
             "medication-history/bulk-patient-panel-file-load"
-              ]
+          ]
         }
       ]
     }
