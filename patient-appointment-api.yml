@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.2.0
+  version: 1.3.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -65,11 +65,11 @@ paths:
         \ active diagnoses and medications for a patient should be supplied in every\
         \ API request. \nThat information is used to satisfy reciprocity requirements\
         \ of the various health information exchanges \nthat Connective Health participates\
-        \ in. Not populating known diagnoses and medications for each patient would\
-        \ \nbe a violation of health information exchange reciprocity rules which\
-        \ could result in the termination of information exchange.\n\n## Overview\n\
-        Manage a patient's registration on the Patient Panel for ADT monitoring. If\
-        \ an ADT notification event occurs, the patient will be processed."
+        \ in. Failure to populate known diagnoses and medications for a patient is\
+        \ \na violation of health information exchange reciprocity rules, and may\
+        \ result in the termination of information exchange.\n\n## Overview\nManage\
+        \ a patient's registration on the Patient Panel for ADT monitoring. If an\
+        \ ADT notification event occurs, the patient will be processed."
       operationId: processAdtPanelPatient
       requestBody:
         content:
@@ -101,16 +101,16 @@ paths:
       tags:
         - Scheduled Appointments
       summary: Patient Data Processing
-      description: "# Data Requirements\n\n**Populate all known data**. It is required\
+      description: "\n# Data Requirements\n\n**Populate all known data**. It is required\
         \ for processing that as much information as possible is supplied.\n \nAll\
         \ active diagnoses and medications for a patient should be supplied in every\
         \ API request. \nThat information is used to satisfy reciprocity requirements\
         \ of the various health information exchanges \nthat Connective Health participates\
-        \ in. Not populating known diagnoses and medications for each patient would\
-        \ \nbe a violation of health information exchange reciprocity rules which\
-        \ could result in the termination of information exchange.\n\n## Overview\n\
-        Standard processing for clinical patient information, both summarized and\
-        \ complete information is supported."
+        \ in. Failure to populate known diagnoses and medications for a patient is\
+        \ \na violation of health information exchange reciprocity rules, and may\
+        \ result in the termination of information exchange.\n\n## Overview\nStandard\
+        \ processing for clinical patient information, both summarized and complete\
+        \ information is supported."
       operationId: createScheduledAppointment
       requestBody:
         content:
@@ -157,13 +157,14 @@ components:
       type: object
       properties:
         lines:
+          pattern: "[^<>\"%;+@]*$"
           type: array
           description: Street lines of the address
-          example: "[\"123 Main St\", \"Suite 567\"]"
           items:
+            pattern: "[^<>\"%;+@]*$"
             type: string
         city:
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: The city
           example: Minneapolis
@@ -177,6 +178,13 @@ components:
           type: string
           description: 5-digit zip code
           example: "55401"
+      example:
+        lines:
+          - 123 Main St
+          - Suite 517
+        city: Minneapolis
+        state: MN
+        zip: "55401"
     AdtPanelPatient:
       required:
         - patient
@@ -196,7 +204,7 @@ components:
             \ yyyy-MM-dd. Only panels generated on or after this date will include\
             \ this patient."
           format: date
-          example: 2024-11-05
+          example: "2024-11-05"
         endDate:
           type: string
           description: "Date the patient will stop being monitored, in ISO-8601 format\
@@ -204,9 +212,9 @@ components:
             \ will include this patient"
           format: date
           nullable: true
-          example: 2025-11-05
+          example: "2025-11-05"
         batchId:
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: Identifier which can be used to logically group requests together.
             Do not populate if you do not need to group requests together. Will default
@@ -225,6 +233,30 @@ components:
             should be populated with all known diagnoses
           items:
             $ref: "#/components/schemas/Diagnosis"
+        activeIcd9Diagnoses:
+          type: array
+          description: All active diagnoses (problems) known about the patient. Must
+            all be ICD-9 codes. If the patient is an existing patient then this list
+            should be populated with all known diagnoses. **ICD-10 should be greatly
+            preferred if available.**
+          example:
+          - code: "401.1"
+            displayName: Benign essential hypertension
+            date: "2023-12-12"
+          items:
+            $ref: "#/components/schemas/Diagnosis"
+        activeSnomedDiagnoses:
+          type: array
+          description: All active diagnoses (problems) known about the patient. Must
+            all be SNOMED codes. If the patient is an existing patient then this list
+            should be populated with all known diagnoses. **ICD-10 should be greatly
+            preferred if available.**
+          example:
+          - code: "34713006"
+            displayName: Vitamin D deficiency
+            date: "2023-12-12"
+          items:
+            $ref: "#/components/schemas/Diagnosis"
         medications:
           type: array
           description: All known medications for the patient
@@ -241,17 +273,17 @@ components:
       type: object
       properties:
         code:
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: The specific code from a code system
           example: N0000175497
         codeSystem:
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: Code system OID. Must be populated if known
           example: 2.16.840.1.113883.6.345
         codeSystemName:
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: Human-readable name of the code system name if known
           example: MED-RT
@@ -311,7 +343,7 @@ components:
       properties:
         code:
           minLength: 1
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: The diagnosis code including punctuation
           example: E66.01
@@ -324,7 +356,7 @@ components:
           type: string
           description: Date of the problem (onset or diagnosed)
           format: date
-          example: 2022-12-12
+          example: "2022-12-12"
     Directives:
       type: object
       properties:
@@ -345,7 +377,7 @@ components:
           description: "Prescriber's sig, or directions for taking the medication"
           example: take 1 tablet by mouth once daily
         strengthUnit:
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: Unit of the dosage strength
           example: mg
@@ -355,7 +387,7 @@ components:
           format: double
           example: 100
         amountUnit:
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: Unit of a single dose
           example: puffs
@@ -399,7 +431,7 @@ components:
           example: 1.2.3.4
         extension:
           minLength: 1
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: Identifier value or extension
           example: ABC123
@@ -525,7 +557,7 @@ components:
           type: string
           description: "Date the medication was prescribed, in ISO-8601 format yyyy-MM-dd"
           format: date
-          example: 2023-12-02
+          example: "2023-12-02"
         prescriber:
           allOf:
             - $ref: "#/components/schemas/Provider"
@@ -552,7 +584,7 @@ components:
               \ if both populated"
               example: QD
         frequencyUnit:
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: Unit of time as defined by http://hl7.org/fhir/ValueSet/units-of-time.
             Should be consistent with timingEvent if both populated
@@ -573,26 +605,35 @@ components:
       properties:
         family:
           minLength: 1
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: Family name (last name)
           example: Johnson
         given:
+          pattern: "[^<>\"%;+@]*$"
           minItems: 1
           type: array
           description: First and/or middle names
-          example: "[\"John\", \"Michael\"]"
           items:
+            pattern: "[^<>\"%;+@]*$"
             type: string
         prefix:
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: Name prefix
           example: Mr.
         suffix:
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: Name suffix
           example: Jr.
+      example:
+        family: Johnson
+        given:
+          - John
+          - Aaron
+        prefix: Mr.
+        suffix: Jr.
     OptionalMultiValues_Link_:
       $ref: "#/components/schemas/OptionalValues_List_Link__"
     OptionalMultiValues_Resource_:
@@ -635,7 +676,7 @@ components:
           type: string
           description: Birth date of the patient in ISO-8601 format yyyy-MM-dd
           format: date
-          example: 1992-04-09
+          example: "1992-04-09"
         address:
           $ref: "#/components/schemas/Address"
         contactPoints:
@@ -686,11 +727,11 @@ components:
           type: string
           description: Date of the appointment in ISO-8601 format yyyy-MM-dd
           format: date
-          example: 2024-11-05
+          example: "2024-11-05"
         upcomingAppointmentProvider:
           $ref: "#/components/schemas/Provider"
         clinicName:
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: "Name of the clinic the patient is being seen at, or the organization\
             \ requesting the data. Customer name will be used if not populated"
@@ -715,12 +756,12 @@ components:
             \ this OR responseDirectAddress"
           example: "6125551234"
         responseFriendlyName:
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: Human-readable name to send response message to
           example: Heart Clinic
         batchId:
-          pattern: "[^<>\"%;&+@:]*$"
+          pattern: "[^<>\"%;+@]*$"
           type: string
           description: Identifier which can be used to logically group requests together.
             Do not populate if you do not need to group requests together. Will default
@@ -731,6 +772,30 @@ components:
           description: All active diagnoses (problems) known about the patient. Must
             all be ICD-10 codes. If the patient is an existing patient then this list
             should be populated with all known diagnoses
+          items:
+            $ref: "#/components/schemas/Diagnosis"
+        activeIcd9Diagnoses:
+          type: array
+          description: All active diagnoses (problems) known about the patient. Must
+            all be ICD-9 codes. If the patient is an existing patient then this list
+            should be populated with all known diagnoses. **ICD-10 should be greatly
+            preferred if available.**
+          example:
+          - code: "401.1"
+            displayName: Benign essential hypertension
+            date: "2023-12-12"
+          items:
+            $ref: "#/components/schemas/Diagnosis"
+        activeSnomedDiagnoses:
+          type: array
+          description: All active diagnoses (problems) known about the patient. Must
+            all be SNOMED codes. If the patient is an existing patient then this list
+            should be populated with all known diagnoses. **ICD-10 should be greatly
+            preferred if available.**
+          example:
+            - code: "34713006"
+              displayName: Vitamin D deficiency
+              date: "2023-12-12"
           items:
             $ref: "#/components/schemas/Diagnosis"
         medications:
