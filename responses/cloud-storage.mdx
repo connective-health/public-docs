@@ -8,9 +8,15 @@ icon: 'cloud-arrow-up'
 
 Delivery to a cloud storage provider object storage can be configured as needed which will enabled documents (PDFs or FHIR bundles) to be pushed to a cloud storage location of your choosing.
 
-Part of the configuration is a templated object name which is where the document will be written to.
+### File Delivery Template
 
-### Available Dynamic Values
+Customers are able to decide the location within S3 where the files are delivered to using a configurable template which
+Connective Health maintains on their behalf. A reasonable default for the template would be `incoming_files/[yyyy]/[MM]/[dd]/[correlationId]_[mrn]_[patientLastName]_[documentType].[ext]`
+
+See the below table for all the dynamic variables which are available in the template. Work with your account manager
+to decide what this configuration should be.
+
+#### Available Dynamic Values
 
 | Property           | Description                                                    |
 |--------------------|----------------------------------------------------------------|
@@ -23,8 +29,6 @@ Part of the configuration is a templated object name which is where the document
 | `dd`               | Two-digit day                                                  |
 | `documentType`     | Document type. Required to be part of the configured location  |
 | `ext`              | File extension. Required to be part of the configured location |
-
-A reasonable default would be `incoming_files/[yyyy]/[MM]/[dd]/[correlationId]_[mrn]_[patientLastName]_[documentType].[ext]`
 
 ## AWS S3 Setup
 
