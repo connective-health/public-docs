@@ -62,6 +62,12 @@ then the message will be retried several times with [progressively longer time](
 
 In certain error situations a webhook may not be delivered as expected. This should be rare, but it is possible.
 
+### Unknown Correlation ID
+
+If your client sends an API request to Connective Health, but the client disconnects or some network error is encountered
+which prevents your client from receiving the correlation ID, you may then receive a webhook which has a correlation ID
+you did not expect. Once we have received the HTTP request we will begin processing and generate webhooks (if necessary).
+
 ### Multiple Deliveries
 
 Webhooks are intended to be at least once semantics. While we strive to only deliver each webhook exactly once, for a
