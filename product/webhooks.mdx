@@ -16,13 +16,14 @@ Our implementation is very loosely based on the open source [Standard Webhooks](
 specification that is in active development.
 
 Each webhook is implemented as an `HTTP POST` to a URL (or URLs) specified by the customer. The basic content
-of each POST will be this. The `type`, `correlationId`, and `timestamp` will always be included. The `data` section
+of each POST will be this. The `type`, `correlationId`, `batchId`, and `timestamp` will always be included. The `data` section
 is optional, but if specified will contain additional information specific to the webhook type.
 
 ```json Webhook Example
 {
   "type": "patient.found",
   "correlationId": "4352bfba-506c-4ffc-b1ba-78e56d0d4ddc",
+  "batchId": "35b0b9b5-5e2c-4e86-839e-2551c78132ff",
   "timestamp": "2024-03-25T19:44:46.516663854Z",
   "data": {
     "key": "value",
@@ -77,6 +78,6 @@ this situation.
 ### Erroneous Delivery
 
 In extremely rare circumstances a webhook may be sent and then later found to be incorrect. An example would be the
-delivery of a `patient.insufficientData` webhook being delivered, but due to a system error it was found that the patient
-was able to be found and processed successfully. In this rare case, the webhook may be sent but a PDF is later delivered.
+delivery of a `patient.insufficientData` webhook being delivered due to a system error, but the patient
+was in fact found and processed successfully. In this rare case, the webhook may be sent but a PDF is later delivered.
 
