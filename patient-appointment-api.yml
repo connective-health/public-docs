@@ -357,6 +357,26 @@ components:
           description: Date of the problem (onset or diagnosed)
           format: date
           example: "2022-12-12"
+    DiagnosticCategories:
+      type: object
+      properties:
+        behavioral:
+          type: boolean
+          description: Behavioral Health diagnostic information is desired for the
+            patient
+          example: false
+          default: false
+        musculoskeletal:
+          type: boolean
+          description: Musculoskeletal diagnostic information is desired for the patient
+          example: false
+          default: false
+        neurological:
+          type: boolean
+          description: Neurological diagnostic information is desired for the patient
+          example: false
+          default: false
+      description: Diagnostic categories of interest regarding the patient
     Directives:
       type: object
       properties:
@@ -365,11 +385,12 @@ components:
           description: Whether patient is new to the clinic (first time patient)
           example: false
           default: false
+        diagnosticCategories:
+          allOf:
+          - $ref: "#/components/schemas/DiagnosticCategories"
+          - description: Diagnostic categories of interest regarding the patient
       description: Directives which may influence how the data is processed
     Dosage:
-      required:
-        - amountValue
-        - strengthValue
       type: object
       properties:
         text:
@@ -613,7 +634,7 @@ components:
           pattern: "[^<>\"%;+@]*$"
           minItems: 1
           type: array
-          description: First and/or middle names
+          description: First and middle names. First name (at least) is required.
           items:
             pattern: "[^<>\"%;+@]*$"
             type: string
@@ -829,7 +850,7 @@ components:
         - Q8H
         - BED
         - WK
-        - M
+        - MO
   securitySchemes:
     apiKey:
       type: apiKey
