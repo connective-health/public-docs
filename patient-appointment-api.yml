@@ -362,8 +362,12 @@ components:
       properties:
         behavioral:
           type: boolean
-          description: Behavioral Health diagnostic information is desired for the
-            patient
+          description: Behavioral Health diagnostic information is desired for the patient
+          example: false
+          default: false
+        cardiovascular:
+          type: boolean
+          description: Cardiovascular diagnostic information is desired for the patient
           example: false
           default: false
         musculoskeletal:
