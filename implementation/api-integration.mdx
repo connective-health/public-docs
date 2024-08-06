@@ -35,7 +35,7 @@ Before connecting to the production API, integration is tested in the staging en
 1. Connective Health confirms customer’s bidirectional sharing is performing correctly, i.e. problems or meds or both are shared in the API request.
 1. Connective Health confirms webhook responses are successfully received by the customer.
 
-Note: Connective Health’s staging environment is intended for functional testing. For example, invoking the API without errors and interacting with it in the way a customer’s system will actually work. It is not intended for test code or load testing.
+Connective Health’s staging environment is intended for functional testing. For example, invoking the API without errors and interacting with it in the way a customer’s system will actually work. It is not intended for test code or load testing.
 
 It is okay to use any non-PHI sample patient information for testing purposes, however only sample patients provided by Connective Health will receive responses. Because Connective Health’s staging environment interacts with live networks and other staging environments across outside EHRs, certain patients may or may not receive a response. To maximize the chances of a successful response it is recommended that API requests are sent for all patients using all provided information.
 
