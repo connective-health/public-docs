@@ -4,7 +4,7 @@ description: 'Utilizing the Connective Health API directly'
 icon: 'code'
 ---
 
-## Setup
+## Overview
 
 To initiate a request for retrieval of outside medical records and generation of consolidated
 patient care summaries, Connective Health allows customers to make API requests as needed for their patients.
@@ -14,4 +14,40 @@ clinical information about each patient as possible (ex: diagnoses, medications)
 This information is shared back with the various health information exchange networks
 as part of their reciprocity requirements.
 
-More information on the Connective Health Clinical Data Processing API can be found [here](/scheduled-appointments/patient-data-processing).
+The Connective Health Clinical Data Processing API specification can be found [here](/scheduled-appointments/patient-data-processing).
+
+## API Implementation Process
+
+### Staging Environment Testing
+
+Before connecting to the production API, integration is tested in the Staging environment.
+
+1. Connective Health sends staging information package to customer:
+    * Staging test patient information
+    * Staging Assigning Authority (MRN Root)
+    * Staging API key
+    * Staging URL
+    * All documentation links
+1. Customer makes HTTP POST requests to the staging endpoint using test patient information.
+1. Connective Health confirms customer's initial staging API requests are successfully received, and responses are successfully sent.
+1. Connective Health confirms customer’s bidirectional sharing is performing correctly, i.e. problems or meds or both are shared in the API request.
+1. Connective Health confirms webhook responses are successfully received by the customer.
+
+Note: Connective Health’s staging environment is intended for functional testing. For example invoking the API without errors and interacting with it in the way a customer’s system will actually work. It is not intended for test code or load testing.
+
+It is okay to use any non-PHI sample patient information for testing purposes, however only sample patients provided by Connective Health will receive responses. Because Connective Health’s staging environment interacts with live networks and other staging environments across outside EHRs, certain patients may or may not receive a response. To maximize the chances of a successful response it is recommended that API requests are sent for all patients using all provided information.
+
+### Production Environment Testing
+
+Once finished with staging, the next step is production testing.
+
+1. Connective Health sends production information package to customer:
+    * Production API key
+    * Production test endpoint URL
+1. Customer sends 10 live patient requests to Connective Health’s production test endpoint. These patients are not processed; they are simply for the purposes of validation.
+1. Connective Health confirms customer's real patient requests are valid and complete, including provider and patient demographic information.
+
+Connective Health finalizes production access upon completion of this production test.
+
+
+
