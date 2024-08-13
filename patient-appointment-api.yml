@@ -7,13 +7,55 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.3.0
+  version: 1.4.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
 security:
   - apiKey: []
 paths:
+  /v1/encounter-summary:
+    post:
+      tags:
+        - Clinical Data Sharing
+      summary: Create Encounter Summary
+      description: "\n# Data Requirements\n\n**Populate all known data**. It is required\
+        \ for processing that as much information as possible is supplied. \n\n##\
+        \ Overview\nDetails of a patient encounter. These details are used to generate\
+        \ an Encounter Summary (Progress Note) CCDA document.\nEach encounter with\
+        \ a patient should generate a request to this endpoint."
+      operationId: processEncounterSummary
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EncounterSummaryDetails"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+        "400":
+          description: Validation problems
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonError"
+        "401":
+          description: Missing or invalid apikey
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+        "403":
+          description: Missing permission
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
   /v1/medication-history/load-file:
     post:
       tags:
@@ -240,9 +282,9 @@ components:
             should be populated with all known diagnoses. **ICD-10 should be greatly
             preferred if available.**
           example:
-          - code: "401.1"
-            displayName: Benign essential hypertension
-            date: "2023-12-12"
+            - code: "401.1"
+              displayName: Benign essential hypertension
+              date: "2023-12-12"
           items:
             $ref: "#/components/schemas/Diagnosis"
         activeSnomedDiagnoses:
@@ -252,9 +294,9 @@ components:
             should be populated with all known diagnoses. **ICD-10 should be greatly
             preferred if available.**
           example:
-          - code: "34713006"
-            displayName: Vitamin D deficiency
-            date: "2023-12-12"
+            - code: "34713006"
+              displayName: Vitamin D deficiency
+              date: "2023-11-12"
           items:
             $ref: "#/components/schemas/Diagnosis"
         medications:
@@ -262,11 +304,55 @@ components:
           description: All known medications for the patient
           items:
             $ref: "#/components/schemas/Medication"
+    CareSetting:
+      type: string
+      description: Classification for where the care took place
+      example: AMBULATORY
+      enum:
+        - AMBULATORY
+        - EMERGENCY
+        - FIELD
+        - HOME_HEALTH
+        - INPATIENT
+        - VIRTUAL
     Charset:
       type: object
       properties:
         registered:
           type: boolean
+    ClinicalNote:
+      required:
+        - lines
+      type: object
+      properties:
+        author:
+          $ref: "#/components/schemas/Provider"
+        date:
+          type: string
+          description: Date the note was recorded or written.
+          format: date
+          example: "2022-12-12"
+        code:
+          allOf:
+            - $ref: "#/components/schemas/FullyValidatedCode"
+            - description: Type of note content. Should come from https://vsac.nlm.nih.gov/valueset/2.16.840.1.113883.11.20.9.68/expansion/Latest
+              example:
+                code: 11506-3
+                codeSystem: 2.16.840.1.113883.6.1
+                codeSystemName: LOINC
+                displayName: Progress Note
+        lines:
+          minItems: 1
+          type: array
+          description: "text of the clinical note, each line will be distinctly separated\
+            \ on CCDA output"
+          example:
+            - The patient was pleasant
+            - Recommend following up in 2 weeks
+          items:
+            minLength: 1
+            type: string
+      description: Additional information provided about the encounter
     Code:
       required:
         - displayName
@@ -362,7 +448,8 @@ components:
       properties:
         behavioral:
           type: boolean
-          description: Behavioral Health diagnostic information is desired for the patient
+          description: Behavioral Health diagnostic information is desired for the
+            patient
           example: false
           default: false
         cardiovascular:
@@ -391,8 +478,8 @@ components:
           default: false
         diagnosticCategories:
           allOf:
-          - $ref: "#/components/schemas/DiagnosticCategories"
-          - description: Diagnostic categories of interest regarding the patient
+            - $ref: "#/components/schemas/DiagnosticCategories"
+            - description: Diagnostic categories of interest regarding the patient
       description: Directives which may influence how the data is processed
     Dosage:
       type: object
@@ -421,6 +508,76 @@ components:
           description: Value of a single dose
           format: double
           example: 2
+    Encounter:
+      required:
+        - careSetting
+        - id
+        - period
+        - type
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: Unique ID for this particular encounter. This value to deduplicate
+            encounters if necessary
+          example: 09b21748-39f6-4c9b-9649-8d7642a19f0f
+        period:
+          allOf:
+            - $ref: "#/components/schemas/Period"
+            - description: Period of time this encounter took place
+        careSetting:
+          allOf:
+            - $ref: "#/components/schemas/CareSetting"
+            - description: Classification for where the care took place
+              example: AMBULATORY
+        type:
+          allOf:
+            - $ref: "#/components/schemas/FullyValidatedCode"
+            - description: Type of the encounter. Should come from https://vsac.nlm.nih.gov/valueset/2.16.840.1.113883.3.88.12.80.32/expansion
+              example:
+                code: "99204"
+                codeSystem: 2.16.840.1.113883.6.12
+                codeSystemName: CPT
+                displayName: OFFICE/OUTPATIENT NEW MODERATE MDM 45 MINUTES
+        diagnosis:
+          allOf:
+            - $ref: "#/components/schemas/FullyValidatedCode"
+            - description: Diagnosis determined at the encounter. Should be an ICD10
+                or SNOMED code
+              example:
+                code: E11.9
+                codeSystem: 2.16.840.1.113883.6.90
+                codeSystemName: ICD10
+                displayName: Type 2 diabetes mellitus without complications
+        clinicalNote:
+          allOf:
+            - $ref: "#/components/schemas/ClinicalNote"
+            - description: Additional information provided about the encounter
+      description: Completed encounter by a provider with a patient
+    EncounterSummaryDetails:
+      required:
+        - encounter
+        - facility
+        - patient
+        - provider
+      type: object
+      properties:
+        patient:
+          $ref: "#/components/schemas/Patient"
+        provider:
+          allOf:
+            - $ref: "#/components/schemas/Provider"
+            - description: Main provider for the encounter
+        facility:
+          allOf:
+            - $ref: "#/components/schemas/Facility"
+            - description: Facility where of time this encounter took place
+        encounter:
+          allOf:
+            - $ref: "#/components/schemas/Encounter"
+            - description: Completed encounter by a provider with a patient
+      description: Full details of an encounter
     Facility:
       required:
         - name
@@ -436,6 +593,43 @@ components:
             - $ref: "#/components/schemas/Address"
             - description: Facility Address
       description: Facility where the medication was prescribed
+    FullyValidatedCode:
+      required:
+        - code
+        - codeSystem
+        - codeSystemName
+        - displayName
+      type: object
+      properties:
+        code:
+          minLength: 1
+          pattern: "[^<>\"%;+@]*$"
+          type: string
+          description: The specific code from a code system
+          example: N0000175497
+        codeSystem:
+          minLength: 1
+          pattern: "[^<>\"%;+@]*$"
+          type: string
+          description: Code system OID. Must be populated if known
+          example: 2.16.840.1.113883.6.345
+        codeSystemName:
+          minLength: 1
+          pattern: "[^<>\"%;+@]*$"
+          type: string
+          description: Human-readable name of the code system name if known
+          example: MED-RT
+        displayName:
+          minLength: 1
+          type: string
+          description: Human-readable description of the code
+          example: Penicillin-class Antibacterial
+      description: Type of the encounter. Should come from https://vsac.nlm.nih.gov/valueset/2.16.840.1.113883.3.88.12.80.32/expansion
+      example:
+        code: "99204"
+        codeSystem: 2.16.840.1.113883.6.12
+        codeSystemName: CPT
+        displayName: OFFICE/OUTPATIENT NEW MODERATE MDM 45 MINUTES
     Gender:
       type: string
       enum:
@@ -638,7 +832,7 @@ components:
           pattern: "[^<>\"%;+@]*$"
           minItems: 1
           type: array
-          description: First and middle names. First name (at least) is required.
+          description: First and middle names. First name (at least) is required
           items:
             pattern: "[^<>\"%;+@]*$"
             type: string
@@ -709,6 +903,23 @@ components:
           items:
             $ref: "#/components/schemas/ContactPoint"
       description: Patient to be processed
+    Period:
+      required:
+        - startDate
+      type: object
+      properties:
+        startDate:
+          type: string
+          description: "Beginning of the period, inclusive"
+          format: date
+          example: "2022-12-12"
+        endDate:
+          type: string
+          description: "End of the period, inclusive. If not specified, the period\
+            \ is assumed to start and end on the same date"
+          format: date
+          example: "2022-12-14"
+      description: Period of time this encounter took place
     ProcessingResponse:
       type: object
       properties:
@@ -806,9 +1017,9 @@ components:
             should be populated with all known diagnoses. **ICD-10 should be greatly
             preferred if available.**
           example:
-          - code: "401.1"
-            displayName: Benign essential hypertension
-            date: "2023-12-12"
+            - code: "401.1"
+              displayName: Benign essential hypertension
+              date: "2023-12-12"
           items:
             $ref: "#/components/schemas/Diagnosis"
         activeSnomedDiagnoses:
@@ -820,7 +1031,7 @@ components:
           example:
             - code: "34713006"
               displayName: Vitamin D deficiency
-              date: "2023-12-12"
+              date: "2023-11-12"
           items:
             $ref: "#/components/schemas/Diagnosis"
         medications:
