@@ -112,7 +112,7 @@ paths:
         \ result in the termination of information exchange.\n\n## Overview\nManage\
         \ a patient's registration on the Patient Panel for ADT monitoring. If an\
         \ ADT notification event occurs, the patient will be processed."
-      operationId: initiateAdtPanelPatientRegistration
+      operationId: processAdtPanelPatient
       requestBody:
         content:
           application/json:
@@ -153,7 +153,7 @@ paths:
         \ result in the termination of information exchange.\n\n## Overview\nStandard\
         \ processing for clinical patient information, both summarized and complete\
         \ information is supported."
-      operationId: initiateScheduledAppointmentProcessing
+      operationId: createScheduledAppointment
       requestBody:
         content:
           application/json:
