@@ -155,7 +155,7 @@ paths:
 
         **Populate all known data**. It is required for processing that as much information as possible is supplied.
 
-        All clinical information for a patient should be supplied in every API request.
+        All active clinical information for a patient should be supplied in every API request.
         That information is used to satisfy reciprocity requirements of the various health information exchanges
         that Connective Health participates in. Failure to populate known clinical information for a patient is
         a violation of health information exchange reciprocity rules, and may result in the termination of information exchange.
