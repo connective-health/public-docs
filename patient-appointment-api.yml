@@ -17,7 +17,7 @@ paths:
   /v1/encounter-summary:
     post:
       tags:
-        - Clinical Data Sharing
+        - Patient Data Sharing
       summary: Create Encounter Summary
       description: "\n# Data Requirements\n\n**Populate all known data**. It is required\
         \ for processing that as much information as possible is supplied. \n\n##\
@@ -138,6 +138,62 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProcessingResponse"
+        "403":
+          description: Missing permission
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+  /v1/patient-record:
+    post:
+      tags:
+        - Patient Data Sharing
+      summary: Share Patient Record
+      description: |2-
+
+        # Data Requirements
+
+        **Populate all known data**. It is required for processing that as much information as possible is supplied.
+
+        All clinical information for a patient should be supplied in every API request.
+        That information is used to satisfy reciprocity requirements of the various health information exchanges
+        that Connective Health participates in. Failure to populate known diagnoses and medications for a patient is
+        a violation of health information exchange reciprocity rules, and may result in the termination of information exchange.
+
+        ## Overview
+        Clinical patient record to share with other providers on the network. This record will ONLY be shared if the patient has ALREADY been the subject of a patient search due to either a scheduled appointment or an incoming ADT event.
+      operationId: sharePatientRecord
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatientRecord"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+        "400":
+          description: Validation problems
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonError"
+        "401":
+          description: Missing or invalid apikey
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+        "403":
+          description: Missing permission
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
   /v1/scheduled-appointment:
     post:
       tags:
@@ -175,6 +231,12 @@ paths:
                 $ref: "#/components/schemas/JsonError"
         "401":
           description: Missing or invalid apikey
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+        "403":
+          description: Missing permission
           content:
             application/json:
               schema:
@@ -304,6 +366,11 @@ components:
           description: All known medications for the patient
           items:
             $ref: "#/components/schemas/Medication"
+        clinicalNotes:
+          type: array
+          description: Additional information provided about the patient
+          items:
+            $ref: "#/components/schemas/ClinicalNote"
     CareSetting:
       type: string
       description: Classification for where the care took place
@@ -352,7 +419,6 @@ components:
           items:
             minLength: 1
             type: string
-      description: Additional information provided about the encounter
     Code:
       required:
         - displayName
@@ -624,12 +690,12 @@ components:
           type: string
           description: Human-readable description of the code
           example: Penicillin-class Antibacterial
-      description: Type of the encounter. Should come from https://vsac.nlm.nih.gov/valueset/2.16.840.1.113883.3.88.12.80.32/expansion
+      description: Type of note content. Should come from https://vsac.nlm.nih.gov/valueset/2.16.840.1.113883.11.20.9.68/expansion/Latest
       example:
-        code: "99204"
-        codeSystem: 2.16.840.1.113883.6.12
-        codeSystemName: CPT
-        displayName: OFFICE/OUTPATIENT NEW MODERATE MDM 45 MINUTES
+        code: 11506-3
+        codeSystem: 2.16.840.1.113883.6.1
+        codeSystemName: LOINC
+        displayName: Progress Note
     Gender:
       type: string
       enum:
@@ -903,6 +969,69 @@ components:
           items:
             $ref: "#/components/schemas/ContactPoint"
       description: Patient to be processed
+    PatientRecord:
+      required:
+        - patient
+        - responsibleProvider
+      type: object
+      properties:
+        patient:
+          $ref: "#/components/schemas/Patient"
+        responsibleProvider:
+          allOf:
+            - $ref: "#/components/schemas/Provider"
+            - description: "Provider responsible for this patient's care. This can be\
+              \ the Primary Care Physician (PCP), most recent provider, or a provider\
+              \ assigned for future care."
+        activeIcd10Diagnoses:
+          type: array
+          description: All active diagnoses (problems) known about the patient. Must
+            all be ICD-10 codes. If the patient is an existing patient then this list
+            should be populated with all known diagnoses
+          items:
+            $ref: "#/components/schemas/Diagnosis"
+        activeIcd9Diagnoses:
+          type: array
+          description: All active diagnoses (problems) known about the patient. Must
+            all be ICD-9 codes. If the patient is an existing patient then this list
+            should be populated with all known diagnoses. **ICD-10 should be greatly
+            preferred if available.**
+          example:
+            - code: "401.1"
+              displayName: Benign essential hypertension
+              date: 2023-12-12
+          items:
+            $ref: "#/components/schemas/Diagnosis"
+        activeSnomedDiagnoses:
+          type: array
+          description: All active diagnoses (problems) known about the patient. Must
+            all be SNOMED codes. If the patient is an existing patient then this list
+            should be populated with all known diagnoses. **ICD-10 should be greatly
+            preferred if available.**
+          example:
+            - code: "34713006"
+              displayName: Vitamin D deficiency
+              date: 2023-11-12
+          items:
+            $ref: "#/components/schemas/Diagnosis"
+        medications:
+          type: array
+          description: All known medications about the patient
+          items:
+            $ref: "#/components/schemas/Medication"
+        clinicalNotes:
+          type: array
+          description: All known clinical notes about the patient which are not related
+            to a specific encounter
+          items:
+            $ref: "#/components/schemas/ClinicalNote"
+        batchId:
+          pattern: "[^<>\"%;+@]*$"
+          type: string
+          description: Identifier which can be used to logically group requests together.
+            Do not populate if you do not need to group requests together. Will default
+            to a UUID if not populated
+          example: BATCH-123
     Period:
       required:
         - startDate
@@ -939,7 +1068,7 @@ components:
           minLength: 10
           type: string
           description: NPI value
-          example: "1234567890"
+          example: "1414912117"
         name:
           $ref: "#/components/schemas/Name"
       description: A medical provider
@@ -1039,6 +1168,11 @@ components:
           description: All known medications about the patient
           items:
             $ref: "#/components/schemas/Medication"
+        clinicalNotes:
+          type: array
+          description: Additional information provided about the patient
+          items:
+            $ref: "#/components/schemas/ClinicalNote"
         directives:
           allOf:
             - $ref: "#/components/schemas/Directives"
