@@ -104,14 +104,14 @@ paths:
       summary: Panel Registration
       description: "\n# Data Requirements\n\n**Populate all known data**. It is required\
         \ for processing that as much information as possible is supplied.\n \nAll\
-        \ active clinical information for a patient should be supplied in every\
-        \ API request. \nThat information is used to satisfy reciprocity requirements\
+        \ active clinical information for a patient should be supplied in every API\
+        \ request. \nThat information is used to satisfy reciprocity requirements\
         \ of the various health information exchanges \nthat Connective Health participates\
-        \ in. Failure to populate known clinical information for a patient is\
-        \ \na violation of health information exchange reciprocity rules, and may\
-        \ result in the termination of information exchange.\n\n## Overview\nManage\
-        \ a patient's registration on the Patient Panel for ADT monitoring. If an\
-        \ ADT notification event occurs, the patient will be processed."
+        \ in. Failure to populate known clinical information for a patient is \na\
+        \ violation of health information exchange reciprocity rules, and may result\
+        \ in the termination of information exchange.\n\n## Overview\nManage a patient's\
+        \ registration on the Patient Panel for ADT monitoring. If an ADT notification\
+        \ event occurs, the patient will be processed."
       operationId: processAdtPanelPatient
       requestBody:
         content:
@@ -201,14 +201,14 @@ paths:
       summary: Patient Data Processing
       description: "\n# Data Requirements\n\n**Populate all known data**. It is required\
         \ for processing that as much information as possible is supplied.\n \nAll\
-        \ active clinical information for a patient should be supplied in every\
-        \ API request. \nThat information is used to satisfy reciprocity requirements\
+        \ active clinical information for a patient should be supplied in every API\
+        \ request. \nThat information is used to satisfy reciprocity requirements\
         \ of the various health information exchanges \nthat Connective Health participates\
-        \ in. Failure to populate known clinical information for a patient is\
-        \ \na violation of health information exchange reciprocity rules, and may\
-        \ result in the termination of information exchange.\n\n## Overview\nStandard\
-        \ processing for clinical patient information, both summarized and complete\
-        \ information is supported."
+        \ in. Failure to populate known clinical information for a patient is \na\
+        \ violation of health information exchange reciprocity rules, and may result\
+        \ in the termination of information exchange.\n\n## Overview\nStandard processing\
+        \ for clinical patient information, both summarized and complete information\
+        \ is supported."
       operationId: createScheduledAppointment
       requestBody:
         content:
@@ -296,12 +296,12 @@ components:
       type: object
       properties:
         patient:
+          description: "Patient to add to the patient panel. Patients on the panel\
+            \ will be monitored via ADT events. If this patient already exists, it\
+            \ will be overwritten. Patients are never deleted; to remove a patient\
+            \ from the panel, set the endDate appropriately."
           allOf:
             - $ref: "#/components/schemas/Patient"
-            - description: "Patient to add to the patient panel. Patients on the panel\
-              \ will be monitored via ADT events. If this patient already exists,\
-              \ it will be overwritten. Patients are never deleted; to remove a patient\
-              \ from the panel, set the endDate appropriately."
         startDate:
           type: string
           description: "Date the patient will start being monitored, in ISO-8601 format\
@@ -325,11 +325,11 @@ components:
             to a UUID it not populated
           example: BATCH-123
         provider:
+          description: "This will be the requesting provider for medical records required\
+            \ to generate a care summary (or FHIR bundle, etc.) as the result of an\
+            \ ADT event"
           allOf:
             - $ref: "#/components/schemas/Provider"
-            - description: "This will be the requesting provider for medical records\
-              \ required to generate a care summary (or FHIR bundle, etc.) as the\
-              \ result of an ADT event"
         activeIcd10Diagnoses:
           type: array
           description: All active diagnoses (problems) known about the patient. Must
@@ -400,14 +400,14 @@ components:
           format: date
           example: "2022-12-12"
         code:
+          description: Type of note content. Should come from https://vsac.nlm.nih.gov/valueset/2.16.840.1.113883.11.20.9.68/expansion/Latest
+          example:
+            code: 11506-3
+            codeSystem: 2.16.840.1.113883.6.1
+            codeSystemName: LOINC
+            displayName: Progress Note
           allOf:
             - $ref: "#/components/schemas/FullyValidatedCode"
-            - description: Type of note content. Should come from https://vsac.nlm.nih.gov/valueset/2.16.840.1.113883.11.20.9.68/expansion/Latest
-              example:
-                code: 11506-3
-                codeSystem: 2.16.840.1.113883.6.1
-                codeSystemName: LOINC
-                displayName: Progress Note
         lines:
           minItems: 1
           type: array
@@ -463,15 +463,15 @@ components:
           description: Phone number or email address
           example: "9525551234"
         contactPointSystem:
+          description: Type of contact
+          example: PHONE
           allOf:
             - $ref: "#/components/schemas/ContactPointSystem"
-            - description: Type of contact
-              example: PHONE
         contactPointUse:
+          description: Use for the contact
+          example: HOME
           allOf:
             - $ref: "#/components/schemas/ContactPointUse"
-            - description: Use for the contact
-              example: HOME
     ContactPointSystem:
       type: string
       description: Type of contact
@@ -543,9 +543,9 @@ components:
           example: false
           default: false
         diagnosticCategories:
+          description: Diagnostic categories of interest regarding the patient
           allOf:
             - $ref: "#/components/schemas/DiagnosticCategories"
-            - description: Diagnostic categories of interest regarding the patient
       description: Directives which may influence how the data is processed
     Dosage:
       type: object
@@ -589,37 +589,37 @@ components:
             encounters if necessary
           example: 09b21748-39f6-4c9b-9649-8d7642a19f0f
         period:
+          description: Period of time this encounter took place
           allOf:
             - $ref: "#/components/schemas/Period"
-            - description: Period of time this encounter took place
         careSetting:
+          description: Classification for where the care took place
+          example: AMBULATORY
           allOf:
             - $ref: "#/components/schemas/CareSetting"
-            - description: Classification for where the care took place
-              example: AMBULATORY
         type:
+          description: Type of the encounter. Should come from https://vsac.nlm.nih.gov/valueset/2.16.840.1.113883.3.88.12.80.32/expansion
+          example:
+            code: "99204"
+            codeSystem: 2.16.840.1.113883.6.12
+            codeSystemName: CPT
+            displayName: OFFICE/OUTPATIENT NEW MODERATE MDM 45 MINUTES
           allOf:
             - $ref: "#/components/schemas/FullyValidatedCode"
-            - description: Type of the encounter. Should come from https://vsac.nlm.nih.gov/valueset/2.16.840.1.113883.3.88.12.80.32/expansion
-              example:
-                code: "99204"
-                codeSystem: 2.16.840.1.113883.6.12
-                codeSystemName: CPT
-                displayName: OFFICE/OUTPATIENT NEW MODERATE MDM 45 MINUTES
         diagnosis:
+          description: Diagnosis determined at the encounter. Should be an ICD10 or
+            SNOMED code
+          example:
+            code: E11.9
+            codeSystem: 2.16.840.1.113883.6.90
+            codeSystemName: ICD10
+            displayName: Type 2 diabetes mellitus without complications
           allOf:
             - $ref: "#/components/schemas/FullyValidatedCode"
-            - description: Diagnosis determined at the encounter. Should be an ICD10
-                or SNOMED code
-              example:
-                code: E11.9
-                codeSystem: 2.16.840.1.113883.6.90
-                codeSystemName: ICD10
-                displayName: Type 2 diabetes mellitus without complications
         clinicalNote:
+          description: Additional information provided about the encounter
           allOf:
             - $ref: "#/components/schemas/ClinicalNote"
-            - description: Additional information provided about the encounter
       description: Completed encounter by a provider with a patient
     EncounterSummaryDetails:
       required:
@@ -632,17 +632,17 @@ components:
         patient:
           $ref: "#/components/schemas/Patient"
         provider:
+          description: Main provider for the encounter
           allOf:
             - $ref: "#/components/schemas/Provider"
-            - description: Main provider for the encounter
         facility:
+          description: Facility where this encounter took place
           allOf:
             - $ref: "#/components/schemas/Facility"
-            - description: Facility where of time this encounter took place
         encounter:
+          description: Completed encounter by a provider with a patient
           allOf:
             - $ref: "#/components/schemas/Encounter"
-            - description: Completed encounter by a provider with a patient
       description: Full details of an encounter
     Facility:
       required:
@@ -655,9 +655,9 @@ components:
           description: Facility Name
           example: ABC Clinic
         address:
+          description: Facility Address
           allOf:
             - $ref: "#/components/schemas/Address"
-            - description: Facility Address
       description: Facility where the medication was prescribed
     FullyValidatedCode:
       required:
@@ -723,12 +723,12 @@ components:
       description: Patient's Medical record Number. Populated with the clinic HL7
         OID home community ID and the local patient ID. Must be unique per patient
     JsonError:
+      required:
+        - message
       type: object
       allOf:
         - $ref: "#/components/schemas/AbstractResource_JsonError_"
-        - required:
-            - message
-          properties:
+        - properties:
             message:
               type: string
             logref:
@@ -776,32 +776,32 @@ components:
             patient
           example: true
         nameCode:
+          description: Medication name code. Code system should be RxNorm if possible
+          example:
+            code: "6809"
+            codeSystem: 2.16.840.1.113883.6.88
+            codeSystemName: RxNorm
+            displayName: metFORMIN
           allOf:
             - $ref: "#/components/schemas/Code"
-            - description: Medication name code. Code system should be RxNorm if possible
-              example:
-                code: "6809"
-                codeSystem: 2.16.840.1.113883.6.88
-                codeSystemName: RxNorm
-                displayName: metFORMIN
         classCode:
+          description: Medication class code. Code system should be MED-RT if possible
+          example:
+            code: N0000175565
+            codeSystem: 2.16.840.1.113883.6.345
+            codeSystemName: MED-RT
+            displayName: Biguanide
           allOf:
             - $ref: "#/components/schemas/Code"
-            - description: Medication class code. Code system should be MED-RT if possible
-              example:
-                code: N0000175565
-                codeSystem: 2.16.840.1.113883.6.345
-                codeSystemName: MED-RT
-                displayName: Biguanide
         scheduleCode:
+          description: Medication schedule code.
+          example:
+            code: IV
+            codeSystem: 2.16.840.1.113883.12.477
+            codeSystemName: Controlled Substance Schedule
+            displayName: Schedule IV
           allOf:
             - $ref: "#/components/schemas/Code"
-            - description: Medication schedule code.
-              example:
-                code: IV
-                codeSystem: 2.16.840.1.113883.12.477
-                codeSystemName: Controlled Substance Schedule
-                displayName: Schedule IV
         medicationRequests:
           type: array
           items:
@@ -810,47 +810,47 @@ components:
       type: object
       properties:
         code:
+          description: Medication code. This is the specific medication including
+            form. Code system should be RxNorm if possible
+          example:
+            code: "861007"
+            codeSystem: 2.16.840.1.113883.6.88
+            codeSystemName: RxNorm
+            displayName: metFORMIN hydrochloride 500 MG Oral Tablet
           allOf:
             - $ref: "#/components/schemas/Code"
-            - description: Medication code. This is the specific medication including
-                form. Code system should be RxNorm if possible
-              example:
-                code: "861007"
-                codeSystem: 2.16.840.1.113883.6.88
-                codeSystemName: RxNorm
-                displayName: metFORMIN hydrochloride 500 MG Oral Tablet
         form:
+          description: Form the medication is in. Code system should be NCI Thesaurus
+            if possible
+          example:
+            code: C42998
+            codeSystem: 2.16.840.1.113883.3.26.1.1
+            codeSystemName: NCI Thesaurus
+            displayName: tablet
           allOf:
             - $ref: "#/components/schemas/Code"
-            - description: Form the medication is in. Code system should be NCI Thesaurus
-                if possible
-              example:
-                code: C42998
-                codeSystem: 2.16.840.1.113883.3.26.1.1
-                codeSystemName: NCI Thesaurus
-                displayName: tablet
         route:
+          description: Route by which the medication is administered
+          example:
+            code: C38288
+            codeSystem: 2.16.840.1.113883.3.26.1.1
+            codeSystemName: NCI Thesaurus
+            displayName: oral
           allOf:
             - $ref: "#/components/schemas/Code"
-            - description: Route by which the medication is administered
-              example:
-                code: C38288
-                codeSystem: 2.16.840.1.113883.3.26.1.1
-                codeSystemName: NCI Thesaurus
-                displayName: oral
         prescribedDate:
           type: string
           description: "Date the medication was prescribed, in ISO-8601 format yyyy-MM-dd"
           format: date
           example: "2023-12-02"
         prescriber:
+          description: Prescriber of the medication
           allOf:
             - $ref: "#/components/schemas/Provider"
-            - description: Prescriber of the medication
         facility:
+          description: Facility where the medication was prescribed
           allOf:
             - $ref: "#/components/schemas/Facility"
-            - description: Facility where the medication was prescribed
         initialFillQuantity:
           type: number
           description: Quantity initially filled for the medication
@@ -862,12 +862,12 @@ components:
           format: int32
           example: 0
         timingEvent:
+          description: "Timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
+            \ (OID 2.16.840.1.113883.4.642.3.78). Should be consistent with frequency\
+            \ if both populated"
+          example: QD
           allOf:
             - $ref: "#/components/schemas/TimingEvent"
-            - description: "Timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
-              \ (OID 2.16.840.1.113883.4.642.3.78). Should be consistent with frequency\
-              \ if both populated"
-              example: QD
         frequencyUnit:
           pattern: "[^<>\"%;+@]*$"
           type: string
@@ -948,11 +948,11 @@ components:
       type: object
       properties:
         mrn:
+          description: Patient's Medical record Number. Populated with the clinic
+            HL7 OID home community ID and the local patient ID. Must be unique per
+            patient
           allOf:
             - $ref: "#/components/schemas/Identifier"
-            - description: Patient's Medical record Number. Populated with the clinic
-                HL7 OID home community ID and the local patient ID. Must be unique per
-                patient
         name:
           $ref: "#/components/schemas/Name"
         gender:
@@ -978,11 +978,11 @@ components:
         patient:
           $ref: "#/components/schemas/Patient"
         responsibleProvider:
+          description: "Provider responsible for this patient's care. This can be\
+            \ the Primary Care Physician (PCP), most recent provider, or a provider\
+            \ assigned for future care."
           allOf:
             - $ref: "#/components/schemas/Provider"
-            - description: "Provider responsible for this patient's care. This can be\
-              \ the Primary Care Physician (PCP), most recent provider, or a provider\
-              \ assigned for future care."
         activeIcd10Diagnoses:
           type: array
           description: All active diagnoses (problems) known about the patient. Must
@@ -1174,9 +1174,9 @@ components:
           items:
             $ref: "#/components/schemas/ClinicalNote"
         directives:
+          description: Directives which may influence how the data is processed
           allOf:
             - $ref: "#/components/schemas/Directives"
-            - description: Directives which may influence how the data is processed
     TimingEvent:
       type: string
       description: "Timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
