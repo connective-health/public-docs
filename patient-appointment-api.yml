@@ -999,7 +999,7 @@ components:
           example:
             - code: "401.1"
               displayName: Benign essential hypertension
-              date: 2023-12-12
+              date: "2023-12-12"
           items:
             $ref: "#/components/schemas/Diagnosis"
         activeSnomedDiagnoses:
@@ -1011,7 +1011,7 @@ components:
           example:
             - code: "34713006"
               displayName: Vitamin D deficiency
-              date: 2023-11-12
+              date: "2023-11-12"
           items:
             $ref: "#/components/schemas/Diagnosis"
         medications:
