@@ -82,6 +82,7 @@
           "group": "Clinical Data",
           "pages": [
             "scheduled-appointments/patient-data-processing",
+            "clinical-data-sharing/patient-record",
             "clinical-data-sharing/encounter-summary"
           ]
         },

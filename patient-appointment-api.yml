@@ -104,10 +104,10 @@ paths:
       summary: Panel Registration
       description: "\n# Data Requirements\n\n**Populate all known data**. It is required\
         \ for processing that as much information as possible is supplied.\n \nAll\
-        \ active diagnoses and medications for a patient should be supplied in every\
+        \ active clinical information for a patient should be supplied in every\
         \ API request. \nThat information is used to satisfy reciprocity requirements\
         \ of the various health information exchanges \nthat Connective Health participates\
-        \ in. Failure to populate known diagnoses and medications for a patient is\
+        \ in. Failure to populate known clinical information for a patient is\
         \ \na violation of health information exchange reciprocity rules, and may\
         \ result in the termination of information exchange.\n\n## Overview\nManage\
         \ a patient's registration on the Patient Panel for ADT monitoring. If an\
@@ -157,7 +157,7 @@ paths:
 
         All clinical information for a patient should be supplied in every API request.
         That information is used to satisfy reciprocity requirements of the various health information exchanges
-        that Connective Health participates in. Failure to populate known diagnoses and medications for a patient is
+        that Connective Health participates in. Failure to populate known clinical information for a patient is
         a violation of health information exchange reciprocity rules, and may result in the termination of information exchange.
 
         ## Overview
@@ -201,10 +201,10 @@ paths:
       summary: Patient Data Processing
       description: "\n# Data Requirements\n\n**Populate all known data**. It is required\
         \ for processing that as much information as possible is supplied.\n \nAll\
-        \ active diagnoses and medications for a patient should be supplied in every\
+        \ active clinical information for a patient should be supplied in every\
         \ API request. \nThat information is used to satisfy reciprocity requirements\
         \ of the various health information exchanges \nthat Connective Health participates\
-        \ in. Failure to populate known diagnoses and medications for a patient is\
+        \ in. Failure to populate known clinical information for a patient is\
         \ \na violation of health information exchange reciprocity rules, and may\
         \ result in the termination of information exchange.\n\n## Overview\nStandard\
         \ processing for clinical patient information, both summarized and complete\
