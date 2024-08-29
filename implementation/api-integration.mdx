@@ -24,6 +24,9 @@ Before connecting to the production API, integration is tested in the staging en
 
 <Warning>**No live patient data should be used in the staging environment.** This includes not just PHI (Protected Health Information), but *any* PII (Personally Identifiable Information). If this occurs by mistake, please contact Connective Health as soon as possible so that the data can be removed.</Warning>
 
+1. Customer sends staging information package to Connective Health:
+    * Staging webhook receiver information
+    * Staging S3 configuration
 1. Connective Health sends staging information package to customer:
     * Staging test patient information
     * Staging Assigning Authority (MRN Root)
@@ -43,6 +46,9 @@ It is okay to use any non-PHI sample patient information for testing purposes, h
 
 Once finished with staging, the next step is production testing.
 
+1. Customer sends production information package to Connective Health:
+    * Production webhook receiver information
+    * Production S3 configuration
 1. Connective Health sends production information package to customer:
     * Production API key
     * Production test endpoint URL
