@@ -8,7 +8,7 @@ icon: 'cloud-arrow-up'
 
 Delivery to a cloud storage provider object storage can be configured as needed which will enabled documents (PDFs or FHIR bundles) to be pushed to a cloud storage location of your choosing.
 
-### File Delivery Template
+### File Delivery Location Template
 
 Customers are able to decide the location within S3 where the files are delivered to using a configurable template which
 Connective Health maintains on their behalf. A reasonable default for the template would be `incoming_files/[yyyy]/[MM]/[dd]/[correlationId]_[mrn]_[patientLastName]_[documentType].[ext]`
@@ -95,5 +95,7 @@ Connective Health will provide you with the appropriate Google Account `sub` val
 }
 ```
 
-<Check>On the Role page, under the Summary section there is an ARN value. Copy this value and provide it to Connective Health</Check>
-
+When you are finished with your configuration please notify Connective Health of these three pieces of information
+1. Your chosen file delivery location template which will dictate the exact path Connective Health writes files to within your S3 bucket
+2. The name of your S3 bucket - we will need a staging/test bucket as well as a production bucket
+3. The role's ARN value. This can be found on the role page, under the summary section
