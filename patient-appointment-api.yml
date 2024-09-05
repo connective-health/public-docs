@@ -810,8 +810,9 @@ components:
       type: object
       properties:
         code:
-          description: Medication code. This is the specific medication including
-            form. Code system should be RxNorm if possible
+          description: Medication code. This is the specific medication including 
+            form. Code system should be NDC or RxNorm if possible. NDC codes are 
+            strongly encouraged to be 11-digit if possible, otherwise 10-digit with dashes.
           example:
             code: "861007"
             codeSystem: 2.16.840.1.113883.6.88
