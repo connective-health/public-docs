@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.5.0
+  version: 1.6.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -382,11 +382,6 @@ components:
         - HOME_HEALTH
         - INPATIENT
         - VIRTUAL
-    Charset:
-      type: object
-      properties:
-        registered:
-          type: boolean
     ClinicalNote:
       required:
         - lines
@@ -737,33 +732,6 @@ components:
             path:
               type: string
               nullable: true
-    MediaType:
-      required:
-        - name
-      type: object
-      properties:
-        name:
-          type: string
-        type:
-          type: string
-        subtype:
-          type: string
-        extension:
-          type: string
-        parameters:
-          $ref: "#/components/schemas/OptionalValues_String_"
-        quality:
-          type: string
-        qualityAsNumber:
-          type: number
-        version:
-          type: string
-        charset:
-          nullable: true
-          allOf:
-            - $ref: "#/components/schemas/Charset"
-        textBased:
-          type: boolean
     Medication:
       required:
         - active
@@ -810,9 +778,10 @@ components:
       type: object
       properties:
         code:
-          description: Medication code. This is the specific medication including 
-            form. Code system should be NDC or RxNorm if possible. NDC codes are 
-            strongly encouraged to be 11-digit if possible, otherwise 10-digit with dashes.
+          description: "Medication code. This is the specific medication including\
+            \ form. Code system should be NDC or RxNorm if possible. NDC codes are\
+            \ strongly encouraged to be 11-digit if possible, otherwise 10-digit with\
+            \ dashes."
           example:
             code: "861007"
             codeSystem: 2.16.840.1.113883.6.88
@@ -930,11 +899,6 @@ components:
         empty:
           type: boolean
     OptionalValues_List_Resource__:
-      type: object
-      properties:
-        empty:
-          type: boolean
-    OptionalValues_String_:
       type: object
       properties:
         empty:
@@ -1107,7 +1071,7 @@ components:
           minLength: 10
           type: string
           description: Facility's NPI if known
-          example: "1234567890"
+          example: "1414912117"
         responseDirectAddress:
           type: string
           description: "Direct Address to return documents to. Typically, populate\
@@ -1133,6 +1097,11 @@ components:
             Do not populate if you do not need to group requests together. Will default
             to a UUID if not populated
           example: BATCH-123
+        medicalSummaryPeriod:
+          description: Processing hint which influences the inclusive date range for
+            data returned on the medical summary
+          allOf:
+            - $ref: "#/components/schemas/Period"
         activeIcd10Diagnoses:
           type: array
           description: All active diagnoses (problems) known about the patient. Must
