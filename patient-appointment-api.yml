@@ -584,7 +584,8 @@ components:
             encounters if necessary
           example: 09b21748-39f6-4c9b-9649-8d7642a19f0f
         period:
-          description: Period of time this encounter took place
+          description: Period of time this encounter took place. If end date is not
+            specified then it will be defaulted to the start date
           allOf:
             - $ref: "#/components/schemas/Period"
         careSetting:
@@ -1009,11 +1010,11 @@ components:
           example: "2022-12-12"
         endDate:
           type: string
-          description: "End of the period, inclusive. If not specified, the period\
-            \ is assumed to start and end on the same date"
+          description: "End of the period, inclusive"
           format: date
           example: "2022-12-14"
-      description: Period of time this encounter took place
+      description: Period of time this encounter took place. If end date is not specified
+        then it will be defaulted to the start date
     ProcessingResponse:
       type: object
       properties:
