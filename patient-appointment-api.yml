@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.6.0
+  version: 1.7.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -439,7 +439,8 @@ components:
           type: string
           description: Human-readable description of the code
           example: Penicillin-class Antibacterial
-      description: Medication name code. Code system should be RxNorm if possible
+      description: A code value within a given code system, along with human-readable
+        names
       example:
         code: "6809"
         codeSystem: 2.16.840.1.113883.6.88
@@ -507,6 +508,11 @@ components:
     DiagnosticCategories:
       type: object
       properties:
+        bariatric:
+          type: boolean
+          description: Bariatric diagnostic information is desired for the patient
+          example: false
+          default: false
         behavioral:
           type: boolean
           description: Behavioral Health diagnostic information is desired for the
