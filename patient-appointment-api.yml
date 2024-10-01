@@ -110,10 +110,9 @@ paths:
       summary: Patient Panel Load
       description: "\n# Data Requirements\n\n**Populate all known data**. It is required\
         \ for processing that as much information as possible is supplied.\n \n##\
-        \ Overview\nSubmits a panel of patients which will be submitted for processing\
-        \ of medication history information in a batch manner.\n\n**Note** there may\
-        \ be times when information submitted is truncated for processing due to downstream\
-        \ system requirements.\n"
+        \ Overview\nSubmits a panel of patients for batch processing of medication\
+        \ history information.\n\n**Note** there may be times when information submitted\
+        \ is truncated for processing due to downstream system requirements.\n"
       operationId: processMedicationHistoryPatientPanel
       requestBody:
         content:
