@@ -109,8 +109,9 @@ paths:
         - Medication History
       summary: Patient Panel Load
       description: "\n# Data Requirements\n\n**Populate all known data**. It is required\
-        \ for processing that as much information as possible is supplied.\n \n##\
-        \ Overview\nSubmits a panel of patients for batch processing of medication\
+        \ for processing that as much information as possible is supplied.\n\n## Early\
+        \ Access\n\nNote, this API is still in early access and is subject to change.\
+        \ \n \n## Overview\nSubmits a panel of patients for batch processing of medication\
         \ history information.\n\n**Note** there may be times when information submitted\
         \ is truncated for processing due to downstream system requirements.\n"
       operationId: processMedicationHistoryPatientPanel
