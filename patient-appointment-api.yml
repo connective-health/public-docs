@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.7.0
+  version: 1.8.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -93,6 +93,55 @@ paths:
                 $ref: "#/components/schemas/JsonError"
         "401":
           description: Missing or invalid apikey
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+        "403":
+          description: Missing permission
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+  /v1/medication-history/patient-panel:
+    post:
+      tags:
+        - Medication History
+      summary: Patient Panel Load
+      description: "\n# Data Requirements\n\n**Populate all known data**. It is required\
+        \ for processing that as much information as possible is supplied.\n\n## Early\
+        \ Access\n\nNote, this API is still in early access and is subject to change.\
+        \ \n \n## Overview\nSubmits a panel of patients for batch processing of medication\
+        \ history information.\n\n**Note** there may be times when information submitted\
+        \ is truncated for processing due to downstream system requirements.\n"
+      operationId: processMedicationHistoryPatientPanel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MedHistoryPatientPanel"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+        "400":
+          description: Validation problems
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonError"
+        "401":
+          description: Missing or invalid apikey
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+        "403":
+          description: Missing permission
           content:
             application/json:
               schema:
@@ -439,8 +488,8 @@ components:
           type: string
           description: Human-readable description of the code
           example: Penicillin-class Antibacterial
-      description: A code value within a given code system, along with human-readable
-        names
+      description: "A code value within a given code system, along with human-readable\
+        \ names"
       example:
         code: "6809"
         codeSystem: 2.16.840.1.113883.6.88
@@ -739,6 +788,26 @@ components:
             path:
               type: string
               nullable: true
+    MedHistoryPatientPanel:
+      required:
+        - medHistoryPatientRecords
+      type: object
+      properties:
+        medHistoryPatientRecords:
+          minItems: 1
+          type: array
+          items:
+            $ref: "#/components/schemas/MedHistoryPatientRecord"
+    MedHistoryPatientRecord:
+      required:
+        - patient
+        - requestingProvider
+      type: object
+      properties:
+        patient:
+          $ref: "#/components/schemas/Patient"
+        requestingProvider:
+          $ref: "#/components/schemas/Provider"
     Medication:
       required:
         - active
