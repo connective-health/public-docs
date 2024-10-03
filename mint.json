@@ -95,6 +95,7 @@
         {
           "group": "Medication History",
           "pages": [
+            "medication-history/patient-panel-load",
             "medication-history/bulk-patient-panel-file-load"
           ]
         }
