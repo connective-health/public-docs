@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.9.0
+  version: 1.10.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -581,6 +581,11 @@ components:
         neurological:
           type: boolean
           description: Neurological diagnostic information is desired for the patient
+          example: false
+          default: false
+        oncological:
+          type: boolean
+          description: Oncological diagnostic information is desired for the patient
           example: false
           default: false
         womens:
