@@ -119,9 +119,7 @@ paths:
         \ Processing Rules\n1. Data may be truncated when submitted for downstream\
         \ system processing based on third-party requirements\n1. Only ASCII values\
         \ 32-126 are allowed for downstream processing; all accented characters will\
-        \ be replaced with non-accented characters\n\n**Note** there may be times\
-        \ when information submitted is truncated for processing due to downstream\
-        \ system requirements.\n"
+        \ be replaced with non-accented characters\n"
       operationId: processMedicationHistoryPatientPanel
       requestBody:
         content:
