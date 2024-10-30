@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.10.0
+  version: 1.11.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -570,13 +570,22 @@ components:
           default: false
         behavioral:
           type: boolean
-          description: Behavioral Health diagnostic information is desired for the
-            patient
+          description: Behavioral Health diagnostic information is desired for the patient
           example: false
           default: false
         cardiovascular:
           type: boolean
           description: Cardiovascular diagnostic information is desired for the patient
+          example: false
+          default: false
+        dermatological:
+          type: boolean
+          description: Dermatological/Integumentary diagnostic information is desired for the patient
+          example: false
+          default: false
+        gastroenterological:
+          type: boolean
+          description: Gastroenterological/Gastrointestinal/Hepatobiliary diagnostic information is desired for the patient
           example: false
           default: false
         musculoskeletal:
