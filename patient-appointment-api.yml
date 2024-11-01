@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.11.0
+  version: 1.12.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -682,16 +682,16 @@ components:
             displayName: OFFICE/OUTPATIENT NEW MODERATE MDM 45 MINUTES
           allOf:
             - $ref: "#/components/schemas/FullyValidatedCode"
-        diagnosis:
-          description: Diagnosis determined at the encounter. Should be an ICD10 or
-            SNOMED code
+        diagnoses:
+          type: array
+          description: Diagnoses determined at the encounter. Should be ICD10 or SNOMED codes.
           example:
-            code: E11.9
-            codeSystem: 2.16.840.1.113883.6.90
-            codeSystemName: ICD10
-            displayName: Type 2 diabetes mellitus without complications
-          allOf:
-            - $ref: "#/components/schemas/FullyValidatedCode"
+            - code: E11.9
+              codeSystem: 2.16.840.1.113883.6.90
+              codeSystemName: ICD10
+              displayName: Type 2 diabetes mellitus without complications
+          items:
+            $ref: "#/components/schemas/FullyValidatedCode"
         clinicalNote:
           description: Additional information provided about the encounter
           allOf:
