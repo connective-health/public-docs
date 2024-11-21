@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.12.0
+  version: 1.13.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -578,6 +578,11 @@ components:
           description: Cardiovascular diagnostic information is desired for the patient
           example: false
           default: false
+        dental:
+          type: boolean
+          description: Dental diagnostic information is desired for the patient
+          example: false
+          default: false
         dermatological:
           type: boolean
           description: Dermatological/Integumentary diagnostic information is desired for the patient
@@ -586,6 +591,11 @@ components:
         gastroenterological:
           type: boolean
           description: Gastroenterological/Gastrointestinal/Hepatobiliary diagnostic information is desired for the patient
+          example: false
+          default: false
+        mens:
+          type: boolean
+          description: Men's Health diagnostic information is desired for the patient
           example: false
           default: false
         musculoskeletal:
@@ -601,6 +611,21 @@ components:
         oncological:
           type: boolean
           description: Oncological diagnostic information is desired for the patient
+          example: false
+          default: false
+        otolaryngological:
+          type: boolean
+          description: Otolaryngological diagnostic information is desired for the patient
+          example: false
+          default: false
+        renal:
+          type: boolean
+          description: Renal diagnostic information is desired for the patient
+          example: false
+          default: false
+        urological:
+          type: boolean
+          description: Urological diagnostic information is desired for the patient
           example: false
           default: false
         womens:
