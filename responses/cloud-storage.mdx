@@ -37,9 +37,8 @@ We connect to AWS S3 using a federated web identity authz model. This allows for
 1. Create (or identify) an S3 bucket which should be used for Connective Health to push documents to
     1. Our recommendation is to create a new bucket for this specific purpose to prevent accidental data leakage or other unexpected problems
 2. Create a new Role under the IAM section of your AWS Console
-    1. The name can be anything you want, for example ch-assume-role-policy
-3. Under this Role, create a new custom trust policy by editing the JSON of the policy
-    1. Set the policy to
+3. When building the role, choose Custom trust policy and edit the JSON of the policy
+    1. Set the policy to the below JSON, Connective Health will provide you with the appropriate Google Account `sub` value based on the environment (staging or production)
 ```json
 {
 	"Version": "2012-10-17",
@@ -61,17 +60,22 @@ We connect to AWS S3 using a federated web identity authz model. This allows for
 	]
 }
 ```
-Connective Health will provide you with the appropriate Google Account `sub` value based on the environment (staging or production).
+![AWS New Role Screen](/images/aws-new-role.png)
 
-1. Under the role add new permissions
+
+1. Choose Next
+2. Continue with the wizard, skipping the adding of permissions, we will do that later
+3. The name can be anything you want, for example ch-assume-role-policy
+4. After creating the role, click on it
+5. Click the Add permissions dropdown and choose Create inline policy
+6. Select JSON
     1. The permissions should provide these permissions (at least):
         * s3:PutObject
         * s3:GetObject
         * s3:ListBucket
         * s3:GetBucketLocation
-2. Make sure to populate the resources array with the S3 bucket and objects
-3. Here is a complete example
-
+7. Make sure to populate the resources array with the S3 bucket and objects
+8. Here is a complete example:
 
 ```json
 {
