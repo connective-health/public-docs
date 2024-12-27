@@ -68,7 +68,6 @@
           "group": "Response Options",
           "pages": [
             "responses/clinical-direct-messaging",
-            "responses/fax",
             "responses/cloud-storage"
           ]
         }
