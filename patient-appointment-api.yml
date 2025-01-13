@@ -646,7 +646,7 @@ components:
           default: false
         pain:
           type: boolean
-          description: Pain-related diagnostic information is desired for the patient
+          description: Chronic pain-related diagnostic information is desired for the patient
           example: false
           default: false
         renal:
