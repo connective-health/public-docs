@@ -658,6 +658,11 @@ components:
           description: Otolaryngological diagnostic information is desired for the patient
           example: false
           default: false
+        pain:
+          type: boolean
+          description: Chronic pain-related diagnostic information is desired for the patient
+          example: false
+          default: false
         renal:
           type: boolean
           description: Renal diagnostic information is desired for the patient
