@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.15.0
+  version: 1.17.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -563,6 +563,11 @@ components:
     DiagnosticCategories:
       type: object
       properties:
+        autoimmune:
+          type: boolean
+          description: Autoimmune diagnostic information is desired for the patient
+          example: false
+          default: false
         bariatric:
           type: boolean
           description: Bariatric diagnostic information is desired for the patient
@@ -596,6 +601,26 @@ components:
         gastroenterological:
           type: boolean
           description: Gastroenterological/Gastrointestinal/Hepatobiliary diagnostic information is desired for the patient
+          example: false
+          default: false
+        generalSurgery:
+          type: boolean
+          description: General Surgery diagnostic information is desired for the patient
+          example: false
+          default: false
+        hematological:
+          type: boolean
+          description: Hematological diagnostic information is desired for the patient
+          example: false
+          default: false
+        infectious:
+          type: boolean
+          description: Infectious disease diagnostic information is desired for the patient
+          example: false
+          default: false
+        lymphatic:
+          type: boolean
+          description: Lymphatic diagnostic information is desired for the patient
           example: false
           default: false
         mens:
@@ -636,6 +661,11 @@ components:
         renal:
           type: boolean
           description: Renal diagnostic information is desired for the patient
+          example: false
+          default: false
+        toxicological:
+          type: boolean
+          description: Toxicological diagnostic information is desired for the patient
           example: false
           default: false
         urological:
