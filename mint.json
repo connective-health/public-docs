@@ -68,7 +68,8 @@
           "group": "Response Options",
           "pages": [
             "responses/clinical-direct-messaging",
-            "responses/cloud-storage"
+            "responses/cloud-storage",
+            "responses/ehr-integration"
           ]
         }
       ]

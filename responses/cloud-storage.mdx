@@ -8,6 +8,10 @@ icon: 'cloud-arrow-up'
 
 Delivery to a cloud storage provider object storage can be configured as needed which will enabled documents (PDFs or FHIR bundles) to be pushed to a cloud storage location of your choosing.
 
+<Tip>
+    After following this guide, provide Connective Health with all details from the [finish](#finish) section
+</Tip>
+
 ### File Delivery Location Template
 
 Customers are able to decide the location within S3 where the files are delivered to using a configurable template which
@@ -98,6 +102,8 @@ We connect to AWS S3 using a federated web identity authz model. This allows for
     ]
 }
 ```
+
+### Finish
 
 When you are finished with your configuration please notify Connective Health of these three pieces of information
 1. Your chosen file delivery location template which will dictate the exact path Connective Health writes files to within your S3 bucket

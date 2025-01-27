@@ -30,7 +30,7 @@ Before connecting to the production API, integration is tested in the staging en
 
 1. Customer sends staging information package to Connective Health:
     * Staging [webhook receiver information](/product/webhooks)
-    * Staging [S3 configuration](/responses/cloud-storage)
+    * Staging [S3 configuration](/responses/cloud-storage#finish)
 2. Connective Health sends staging information package to customer:
     * Staging test patient information
     * Staging Assigning Authority (MRN Root)
@@ -55,7 +55,7 @@ Once finished with staging, the next step is production testing.
 
 1. Customer sends production information package to Connective Health:
     * Production [webhook receiver information](/product/webhooks)
-    * Production [S3 configuration](/responses/cloud-storage)
+    * Production [S3 configuration](/responses/cloud-storage#finish)
 2. Connective Health sends production information package to customer:
     * Production API key
     * Production test endpoint URL - `https://processing-request-production.connectivehealth.io/v1/scheduled-appointment/test`
