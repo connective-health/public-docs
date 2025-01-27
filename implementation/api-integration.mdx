@@ -22,40 +22,46 @@ The Connective Health Clinical Data Processing API specification can be found [h
 
 Before connecting to the production API, integration is tested in the staging environment.
 
-<Warning>**No live patient data should be used in the staging environment.** This includes not just PHI (Protected Health Information), but *any* PII (Personally Identifiable Information). If this occurs by mistake, please contact Connective Health as soon as possible so that the data can be removed.</Warning>
+<Warning>
+    **No live patient data should be used in the staging environment.** This includes not just PHI
+    (Protected Health Information), but *any* PII (Personally Identifiable Information).
+    If this occurs by mistake, please contact Connective Health as soon as possible so that the data can be removed.
+</Warning>
 
 1. Customer sends staging information package to Connective Health:
-    * Staging webhook receiver information
-    * Staging S3 configuration
-1. Connective Health sends staging information package to customer:
+    * Staging [webhook receiver information](/product/webhooks)
+    * Staging [S3 configuration](/responses/cloud-storage)
+2. Connective Health sends staging information package to customer:
     * Staging test patient information
     * Staging Assigning Authority (MRN Root)
     * Staging API key
-    * Staging URL
+    * Staging URL - `https://processing-request-staging.connectivehealth.io/v1/scheduled-appointment`
     * All documentation links
-1. Customer makes HTTP POST requests to the staging endpoint using test patient information.
-1. Connective Health confirms customer's initial staging API requests are successfully received, and responses are successfully sent.
-1. Connective Health confirms customer’s bidirectional sharing is performing correctly, i.e. problems or meds or both are shared in the API request.
-1. Connective Health confirms webhook responses are successfully received by the customer.
+3. Customer makes HTTP POST requests to the staging endpoint using test patient information
+4. Connective Health confirms customer's initial staging API requests are successfully received, and responses are successfully sent
+5. Connective Health confirms customer’s bidirectional sharing is performing correctly, i.e. problems or meds or both are shared in the API request
+6. Connective Health confirms webhook responses are successfully received by the customer
 
-Connective Health’s staging environment is intended for functional testing. For example, invoking the API without errors and interacting with it in the way a customer’s system will actually work. It is not intended for test code or load testing.
+Connective Health’s staging environment is intended for functional testing. For example, invoking the API without errors
+and interacting with it in the way a customer’s system will actually work. It is not intended for test code or load testing.
 
-It is okay to use any non-PHI sample patient information for testing purposes, however only sample patients provided by Connective Health will receive responses. Because Connective Health’s staging environment interacts with live networks and other staging environments across outside EHRs, certain patients may or may not receive a response. To maximize the chances of a successful response it is recommended that API requests are sent for all patients using all provided information.
+It is okay to use any non-PHI sample patient information for testing purposes, however only sample patients provided by
+Connective Health will receive responses. Because Connective Health’s staging environment interacts with live networks
+and other staging environments across outside EHRs, certain patients may or may not receive a response. To maximize the chances of a successful response it is recommended that API requests are sent for all patients using all provided information.
 
 ### Production Environment Testing
 
 Once finished with staging, the next step is production testing.
 
 1. Customer sends production information package to Connective Health:
-    * Production webhook receiver information
-    * Production S3 configuration
-1. Connective Health sends production information package to customer:
+    * Production [webhook receiver information](/product/webhooks)
+    * Production [S3 configuration](/responses/cloud-storage)
+2. Connective Health sends production information package to customer:
     * Production API key
-    * Production test endpoint URL
-1. Customer sends between 5 and 10 real patient requests, *with all data normally included for a production request,* to Connective Health’s production test endpoint. These requests will not be processed; they are only for validation purposes.
-1. Connective Health confirms customer's real patient requests are valid and complete, including provider and patient demographic information.
+    * Production test endpoint URL - `https://processing-request-production.connectivehealth.io/v1/scheduled-appointment/test`
+3. Customer sends between 5 and 10 real patient requests, *with all data normally included for a production request,*
+to Connective Health’s production test endpoint. These requests will not be processed; they are only for validation purposes
+4. Connective Health confirms customer's real patient requests are valid and complete, including provider and patient demographic information
 
-Connective Health finalizes production access upon completion of this production test.
-
-
-
+Connective Health finalizes production access upon completion of this production test. The true production endpoint is
+ `https://processing-request-production.connectivehealth.io/v1/scheduled-appointment`
