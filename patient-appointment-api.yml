@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.17.0
+  version: 1.18.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -631,6 +631,11 @@ components:
         musculoskeletal:
           type: boolean
           description: Musculoskeletal diagnostic information is desired for the patient
+          example: false
+          default: false
+        neonatological:
+          type: boolean
+          description: Neonatological diagnostic information is desired for the patient
           example: false
           default: false
         neurological:
