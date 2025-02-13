@@ -7,10 +7,13 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 1.18.0
+  version: 2.0.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
+  - url: https://processing-request-production.connectivehealth.io/
+    description: Customer production site. Real patient information is only supported
+      here.
 security:
   - apiKey: []
 paths:
@@ -296,6 +299,56 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProcessingResponse"
+  /v2/patient-data/process:
+    post:
+      tags:
+        - Patient Processing Panel
+      summary: Patient Data Processing
+      description: |2-
+
+        # Data Requirements
+
+        **Populate all known data**. It is required for processing that as much information as possible is supplied.
+
+        All active clinical information for a patient should be supplied in every API request.
+        That information is used to satisfy reciprocity requirements of the various health information exchanges
+        that Connective Health participates in. Failure to populate known clinical information for a patient is
+        a violation of health information exchange reciprocity rules, and may result in the termination of information exchange.
+
+        ## Overview
+        Standard processing for clinical patient information, both summarized and complete information is supported.
+      operationId: processPatientDataPanel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatientProcessingPanel"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+        "400":
+          description: Validation problems
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonError"
+        "401":
+          description: Missing or invalid apikey
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
+        "403":
+          description: Missing permission
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessingResponse"
 components:
   schemas:
     AbstractResource_JsonError_:
@@ -322,21 +375,26 @@ components:
           items:
             pattern: "[^<>\"%;+@]*$"
             type: string
+            x-pattern-message: Should not contain special characters
         city:
           pattern: "[^<>\"%;+@]*$"
           type: string
           description: The city
           example: Minneapolis
+          x-pattern-message: Should not contain special characters
         state:
           pattern: "^[A-Za-z]{2}$|\\s*"
           type: string
           description: State code abbreviation
           example: MN
+          x-pattern-message: State code must be two character postal abbreviation
+            or blank
         zip:
           pattern: "^\\d{5}$"
           type: string
           description: 5-digit zip code
           example: "55401"
+          x-pattern-message: Zip must be the five digit postal code
       example:
         lines:
           - 123 Main St
@@ -379,6 +437,7 @@ components:
             Do not populate if you do not need to group requests together. Will default
             to a UUID it not populated
           example: BATCH-123
+          x-pattern-message: Should not contain special characters
         provider:
           description: "This will be the requesting provider for medical records required\
             \ to generate a care summary (or FHIR bundle, etc.) as the result of an\
@@ -479,16 +538,19 @@ components:
           type: string
           description: The specific code from a code system
           example: N0000175497
+          x-pattern-message: Should not contain special characters
         codeSystem:
           pattern: "[^<>\"%;+@]*$"
           type: string
           description: Code system OID. Must be populated if known
           example: 2.16.840.1.113883.6.345
+          x-pattern-message: Should not contain special characters
         codeSystemName:
           pattern: "[^<>\"%;+@]*$"
           type: string
           description: Human-readable name of the code system name if known
           example: MED-RT
+          x-pattern-message: Should not contain special characters
         displayName:
           minLength: 1
           type: string
@@ -550,6 +612,7 @@ components:
           type: string
           description: The diagnosis code including punctuation
           example: E66.01
+          x-pattern-message: Should not contain special characters
         displayName:
           minLength: 1
           type: string
@@ -560,6 +623,42 @@ components:
           description: Date of the problem (onset or diagnosed)
           format: date
           example: "2022-12-12"
+    Diagnosis_1:
+      required:
+        - active
+        - code
+        - codeSystem
+        - displayName
+      type: object
+      properties:
+        code:
+          minLength: 1
+          pattern: "[^<>\"%;+@]*$"
+          type: string
+          description: The diagnosis code including punctuation
+          example: E66.01
+          x-pattern-message: Should not contain special characters
+        codeSystem:
+          minLength: 1
+          pattern: "[^<>\"%;+@]*$"
+          type: string
+          description: The diagnosis code system - should be an HL7 OID
+          example: 2.16.840.1.113883.6.90
+          x-pattern-message: Should not contain special characters
+        displayName:
+          minLength: 1
+          type: string
+          description: The display value for the diagnosis
+          example: Morbid (severe) obesity due to excess calories
+        date:
+          type: string
+          description: Date of the problem (onset or diagnosed)
+          format: date
+          example: "2022-12-12"
+        active:
+          type: boolean
+          description: Whether the diagnosis is still active or not
+          example: true
     DiagnosticCategories:
       type: object
       properties:
@@ -575,7 +674,8 @@ components:
           default: false
         behavioral:
           type: boolean
-          description: Behavioral Health diagnostic information is desired for the patient
+          description: Behavioral Health diagnostic information is desired for the
+            patient
           example: false
           default: false
         cardiovascular:
@@ -590,17 +690,20 @@ components:
           default: false
         dermatological:
           type: boolean
-          description: Dermatological/Integumentary diagnostic information is desired for the patient
+          description: Dermatological/Integumentary diagnostic information is desired
+            for the patient
           example: false
           default: false
         endocrinological:
           type: boolean
-          description: Endocrinological diagnostic information is desired for the patient
+          description: Endocrinological diagnostic information is desired for the
+            patient
           example: false
           default: false
         gastroenterological:
           type: boolean
-          description: Gastroenterological/Gastrointestinal/Hepatobiliary diagnostic information is desired for the patient
+          description: Gastroenterological/Gastrointestinal/Hepatobiliary diagnostic
+            information is desired for the patient
           example: false
           default: false
         generalSurgery:
@@ -615,7 +718,8 @@ components:
           default: false
         infectious:
           type: boolean
-          description: Infectious disease diagnostic information is desired for the patient
+          description: Infectious disease diagnostic information is desired for the
+            patient
           example: false
           default: false
         lymphatic:
@@ -660,12 +764,14 @@ components:
           default: false
         otolaryngological:
           type: boolean
-          description: Otolaryngological diagnostic information is desired for the patient
+          description: Otolaryngological diagnostic information is desired for the
+            patient
           example: false
           default: false
         pain:
           type: boolean
-          description: Chronic pain-related diagnostic information is desired for the patient
+          description: Chronic pain-related diagnostic information is desired for
+            the patient
           example: false
           default: false
         renal:
@@ -721,6 +827,7 @@ components:
           type: string
           description: Unit of the dosage strength
           example: mg
+          x-pattern-message: Should not contain special characters
         strengthValue:
           type: number
           description: Value of the dosage strength
@@ -731,6 +838,7 @@ components:
           type: string
           description: Unit of a single dose
           example: puffs
+          x-pattern-message: Should not contain special characters
         amountValue:
           type: number
           description: Value of a single dose
@@ -771,7 +879,8 @@ components:
             - $ref: "#/components/schemas/FullyValidatedCode"
         diagnoses:
           type: array
-          description: Diagnoses determined at the encounter. Should be ICD10 or SNOMED codes.
+          description: Diagnoses determined at the encounter. Should be ICD10 or SNOMED
+            codes.
           example:
             - code: E11.9
               codeSystem: 2.16.840.1.113883.6.90
@@ -836,18 +945,21 @@ components:
           type: string
           description: The specific code from a code system
           example: N0000175497
+          x-pattern-message: Should not contain special characters
         codeSystem:
           minLength: 1
           pattern: "[^<>\"%;+@]*$"
           type: string
           description: Code system OID. Must be populated if known
           example: 2.16.840.1.113883.6.345
+          x-pattern-message: Should not contain special characters
         codeSystemName:
           minLength: 1
           pattern: "[^<>\"%;+@]*$"
           type: string
           description: Human-readable name of the code system name if known
           example: MED-RT
+          x-pattern-message: Should not contain special characters
         displayName:
           minLength: 1
           type: string
@@ -883,7 +995,8 @@ components:
           type: string
           description: Identifier value or extension
           example: ABC123
-      description: Patient's Medical record Number. Populated with the clinic HL7
+          x-pattern-message: Should not contain special characters
+      description: Patient's Medical Record Number. Populated with the clinic HL7
         OID home community ID and the local patient ID. Must be unique per patient
     JsonError:
       required:
@@ -1031,6 +1144,7 @@ components:
           description: Unit of time as defined by http://hl7.org/fhir/ValueSet/units-of-time.
             Should be consistent with timingEvent if both populated
           example: d
+          x-pattern-message: Should not contain special characters
         frequencyValue:
           type: number
           description: Frequency at which the medication should be taken. Should be
@@ -1051,6 +1165,7 @@ components:
           type: string
           description: Family name (last name)
           example: Johnson
+          x-pattern-message: Should not contain special characters
         given:
           pattern: "[^<>\"%;+@]*$"
           minItems: 1
@@ -1059,16 +1174,19 @@ components:
           items:
             pattern: "[^<>\"%;+@]*$"
             type: string
+            x-pattern-message: Should not contain special characters
         prefix:
           pattern: "[^<>\"%;+@]*$"
           type: string
           description: Name prefix
           example: Mr.
+          x-pattern-message: Should not contain special characters
         suffix:
           pattern: "[^<>\"%;+@]*$"
           type: string
           description: Name suffix
           example: Jr.
+          x-pattern-message: Should not contain special characters
       example:
         family: Johnson
         given:
@@ -1100,7 +1218,7 @@ components:
       type: object
       properties:
         mrn:
-          description: Patient's Medical record Number. Populated with the clinic
+          description: Patient's Medical Record Number. Populated with the clinic
             HL7 OID home community ID and the local patient ID. Must be unique per
             patient
           allOf:
@@ -1121,6 +1239,105 @@ components:
           items:
             $ref: "#/components/schemas/ContactPoint"
       description: Patient to be processed
+    PatientPanelDirectives:
+      type: object
+      properties:
+        requestMedicationHistory:
+          type: boolean
+          description: |-
+            Whether pharmacy medication history information should be requested prior to any further processing.
+            Note: only a limited number of batches are allowed per day with this flag set to true.
+            Make sure patients are batched together in groups.
+            Contact your customer success representative for more details on usage of this feature.
+          example: true
+          default: false
+      description: Directives which may influence how the data is processed. Applies
+        to all requests in this panel.
+    PatientProcessingPanel:
+      type: object
+      properties:
+        patientProcessingRequests:
+          maxItems: 2500
+          minItems: 1
+          type: array
+          items:
+            $ref: "#/components/schemas/PatientProcessingRequest"
+        batchId:
+          pattern: "[^<>\"%;+@]*$"
+          type: string
+          description: Identifier which can be used to logically group requests together.
+            Do not populate if you do not need to group requests together. Will default
+            if not populated
+          example: BATCH-123
+          x-pattern-message: Should not contain special characters
+        patientPanelDirectives:
+          description: Directives which may influence how the data is processed. Applies
+            to all requests in this panel.
+          allOf:
+            - $ref: "#/components/schemas/PatientPanelDirectives"
+    PatientProcessingRequest:
+      required:
+        - patient
+        - requestingProvider
+      type: object
+      properties:
+        patient:
+          $ref: "#/components/schemas/Patient_1"
+        upcomingAppointmentDate:
+          type: string
+          description: Date of the appointment in ISO-8601 format yyyy-MM-dd
+          format: date
+          example: "2025-11-05"
+        requestingProvider:
+          $ref: "#/components/schemas/Provider"
+        clinicName:
+          pattern: "[^<>\"%;+@]*$"
+          type: string
+          description: "Name of the clinic the patient is being seen at, or the organization\
+            \ requesting the data. Customer name will be used if not populated"
+          example: Simple Clinic Name
+          x-pattern-message: Should not contain special characters
+        clinicNpi:
+          maxLength: 10
+          minLength: 10
+          type: string
+          description: Facility's NPI if known
+          example: "1414912117"
+          x-size-message: NPI must be exactly 10 characters
+        responseDirectAddress:
+          type: string
+          description: "Direct Address to return documents to. Typically, populate\
+            \ this OR responseFaxNumber"
+          format: email
+          example: contact@yourdomain.com
+          x-pattern-message: response direct address must be a valid format
+        responseFriendlyName:
+          pattern: "[^<>\"%;+@]*$"
+          type: string
+          description: Human-readable name to send response message to
+          example: Heart Clinic
+          x-pattern-message: Should not contain special characters
+        diagnoses:
+          type: array
+          description: All diagnoses (problems) known about the patient. If the patient
+            is an existing patient then this list should be populated with all known
+            diagnoses
+          items:
+            $ref: "#/components/schemas/Diagnosis_1"
+        medications:
+          type: array
+          description: All known medications about the patient
+          items:
+            $ref: "#/components/schemas/Medication"
+        clinicalNotes:
+          type: array
+          description: Additional information provided about the patient
+          items:
+            $ref: "#/components/schemas/ClinicalNote"
+        directives:
+          description: Directives which may influence how the data is processed
+          allOf:
+            - $ref: "#/components/schemas/Directives"
     PatientRecord:
       required:
         - patient
@@ -1184,6 +1401,41 @@ components:
             Do not populate if you do not need to group requests together. Will default
             to a UUID if not populated
           example: BATCH-123
+          x-pattern-message: Should not contain special characters
+    Patient_1:
+      required:
+        - addresses
+        - birthDate
+        - gender
+        - mrn
+        - name
+      type: object
+      properties:
+        mrn:
+          description: Patient's Medical Record Number. Populated with the clinic
+            HL7 OID home community ID and the local patient ID. Must be unique per
+            patient
+          allOf:
+            - $ref: "#/components/schemas/Identifier"
+        name:
+          $ref: "#/components/schemas/Name"
+        gender:
+          $ref: "#/components/schemas/Gender"
+        birthDate:
+          type: string
+          description: Birth date of the patient in ISO-8601 format yyyy-MM-dd
+          format: date
+          example: "1992-04-09"
+        addresses:
+          minItems: 1
+          type: array
+          items:
+            $ref: "#/components/schemas/Address"
+        contactPoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactPoint"
+      description: Patient to be processed
     Period:
       required:
         - startDate
@@ -1221,6 +1473,7 @@ components:
           type: string
           description: NPI value
           example: "1414912117"
+          x-size-message: NPI must be exactly 10 characters
         name:
           $ref: "#/components/schemas/Name"
       description: A medical provider
@@ -1253,18 +1506,21 @@ components:
           description: "Name of the clinic the patient is being seen at, or the organization\
             \ requesting the data. Customer name will be used if not populated"
           example: Simple Clinic Name
+          x-pattern-message: Should not contain special characters
         clinicNpi:
           maxLength: 10
           minLength: 10
           type: string
           description: Facility's NPI if known
           example: "1414912117"
+          x-size-message: NPI must be exactly 10 characters
         responseDirectAddress:
           type: string
           description: "Direct Address to return documents to. Typically, populate\
             \ this OR responseFaxNumber"
           format: email
           example: contact@yourdomain.com
+          x-pattern-message: response direct address must be a valid format
         responseFaxNumber:
           maxLength: 10
           minLength: 10
@@ -1277,6 +1533,7 @@ components:
           type: string
           description: Human-readable name to send response message to
           example: Heart Clinic
+          x-pattern-message: Should not contain special characters
         batchId:
           pattern: "[^<>\"%;+@]*$"
           type: string
@@ -1284,6 +1541,7 @@ components:
             Do not populate if you do not need to group requests together. Will default
             to a UUID if not populated
           example: BATCH-123
+          x-pattern-message: Should not contain special characters
         medicalSummaryPeriod:
           description: Processing hint which influences the inclusive date range for
             data returned on the medical summary
