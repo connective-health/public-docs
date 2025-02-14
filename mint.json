@@ -78,10 +78,13 @@
       "group": "APIs",
       "pages": [
         "api-reference/introduction",
+        "api-reference/patient-data-v2-upgrade-guide",
+        "api-reference/release-notes",
         {
           "group": "Clinical Data",
           "pages": [
-            "scheduled-appointments/patient-data-processing",
+            "clinical-data/patient-data-v2",
+            "clinical-data/patient-data-processing-v1",
             "clinical-data-sharing/patient-record",
             "clinical-data-sharing/encounter-summary"
           ]

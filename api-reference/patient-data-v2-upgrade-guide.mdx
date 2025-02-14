@@ -1,0 +1,38 @@
+---
+title: 'Patient Data v2 Upgrade Guide'
+sidebarTitle: 'API Upgrade Guide'
+description: 'Upgrading from Scheduled Appointment API to Patient Data'
+icon: 'arrow-up-right-dots'
+---
+
+<Warning>
+    This new API is still in development
+</Warning>
+
+# Overview
+
+For users of the [Scheduled Appointment API endpoint](/clinical-data/patient-data-processing-v1) there are a few breaking changes that need to be accounted
+for when migrating to the new [Patient Data API](/clinical-data/patient-data-v2) endpoint.
+
+## New Capabilities
+
+* **PHARMACY DATA!** The new `patientPanelDirectives.requestMedicationHistory` field can be set to `true` to indicate that pharmacy medication
+history data should be queried before processing the patient. Setting this to `true` will incur several hours delays
+in receiving PDFs and should only be used after consultation with your customer success representative.
+* Patients with multiple (e.g. previous) addresses are now fully supported
+* Requests for processing can now be sent in a single batch. The top level object accepts an array of requests
+* Active and inactive diagnoses are accepted
+* Diagnoses from any code system are accepted
+  * ICD-10 (`2.16.840.1.113883.6.90`) is preferred
+
+## Upgrade Steps
+
+1. A top level `patientProcessingRequests` array is now required and is where most request data is populated
+2. `patient.address` is now an array `patient.addresses`
+3. `medicalSummaryPeriod` is now a property of `directives`
+4. `activeIcd10Diagnoses` should now be added to the more generic `diagnoses` array and populated with a `codeSystem` value of `2.16.840.1.113883.6.90`. The `active` indicator must also be set appropriately
+5. `activeIcd9Diagnoses` should now be added to the more generic `diagnoses` array and populated with a `codeSystem` value of `2.16.840.1.113883.6.103`. The `active` indicator must also be set appropriately
+6. `activeSnomedDiagnoses` should now be added to the more generic `diagnoses` array and populated with a `codeSystem` value of `2.16.840.1.113883.6.96`. The `active` indicator must also be set appropriately
+7. `batchId` is now specified at the top level request outside of the request records, it is still optional
+8. `upcomingAppointmentDate` is no longer required
+9. All fields which support arrays are no longer allowed to contain null elements
