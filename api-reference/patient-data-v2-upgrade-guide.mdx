@@ -17,12 +17,13 @@ for when migrating to the new [Patient Data API](/clinical-data/patient-data-v2)
 ## New Capabilities
 
 * **PHARMACY DATA!** The new `patientPanelDirectives.requestMedicationHistory` field can be set to `true` to indicate that pharmacy medication
-history data should be queried for before processing the patient. Setting this to `true` will incur several hours delays
+history data should be queried before processing the patient. Setting this to `true` will incur several hours delays
 in receiving PDFs and should only be used after consultation with your customer success representative.
-* Patients with multiple (previous) addresses are now fully supported
+* Patients with multiple (e.g. previous) addresses are now fully supported
 * Requests for processing can now be sent in a single batch. The top level object accepts an array of requests
 * Active and inactive diagnoses are accepted
 * Diagnoses from any code system are accepted
+  * ICD-10 (`2.16.840.1.113883.6.90`) is preferred
 
 ## Upgrade Steps
 
@@ -34,4 +35,4 @@ in receiving PDFs and should only be used after consultation with your customer 
 6. `activeSnomedDiagnoses` should now be added to the more generic `diagnoses` array and populated with a `codeSystem` value of `2.16.840.1.113883.6.96`. The `active` indicator must also be set appropriately
 7. `batchId` is now specified at the top level request outside of the request records, it is still optional
 8. `upcomingAppointmentDate` is no longer required
-9. All fields which support arrays no longer are allowed to contain null elements
+9. All fields which support arrays are no longer allowed to contain null elements
