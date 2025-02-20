@@ -421,7 +421,7 @@ components:
             \ yyyy-MM-dd. Only panels generated on or after this date will include\
             \ this patient."
           format: date
-          example: "2024-11-05"
+          example: 2024-11-05
         endDate:
           type: string
           description: "Date the patient will stop being monitored, in ISO-8601 format\
@@ -429,7 +429,7 @@ components:
             \ will include this patient"
           format: date
           nullable: true
-          example: "2025-11-05"
+          example: 2025-11-05
         batchId:
           pattern: "[^<>\"%;+@]*$"
           type: string
@@ -460,7 +460,7 @@ components:
           example:
             - code: "401.1"
               displayName: Benign essential hypertension
-              date: "2023-12-12"
+              date: 2023-12-12
           items:
             $ref: "#/components/schemas/Diagnosis"
         activeSnomedDiagnoses:
@@ -472,7 +472,7 @@ components:
           example:
             - code: "34713006"
               displayName: Vitamin D deficiency
-              date: "2023-11-12"
+              date: 2023-11-12
           items:
             $ref: "#/components/schemas/Diagnosis"
         medications:
@@ -507,7 +507,7 @@ components:
           type: string
           description: Date the note was recorded or written.
           format: date
-          example: "2022-12-12"
+          example: 2022-12-12
         code:
           description: Type of note content. Should come from https://vsac.nlm.nih.gov/valueset/2.16.840.1.113883.11.20.9.68/expansion/Latest
           example:
@@ -622,7 +622,7 @@ components:
           type: string
           description: Date of the problem (onset or diagnosed)
           format: date
-          example: "2022-12-12"
+          example: 2022-12-12
     Diagnosis_1:
       required:
         - active
@@ -654,7 +654,7 @@ components:
           type: string
           description: Date of the problem (onset or diagnosed)
           format: date
-          example: "2022-12-12"
+          example: 2022-12-12
         active:
           type: boolean
           description: Whether the diagnosis is still active or not
@@ -809,9 +809,42 @@ components:
             - $ref: "#/components/schemas/DiagnosticCategories"
         medicationsOfInterest:
           type: array
-          description: Medications of interest regarding the patient. Include MedicationRequest
-            details if known. These may be displayed on documents to direct the reader's
-            attention.
+          description: "Medications of interest regarding the patient. Include MedicationRequest\
+            \ details if known. \nThese may be displayed on documents to direct the\
+            \ reader's attention.\n\n**For medication filtering to work correctly**,\
+            \ medication request codes must be 11-digit NDCs. Therefore the code system\
+            \ must be \neither http://hl7.org/fhir/sid/ndc (the NDC URI) or 2.16.840.1.113883.6.69\
+            \ (the NDC OID), and the code value must be an 11-digit NDC,\nwith or\
+            \ without dashes."
+          items:
+            $ref: "#/components/schemas/Medication"
+        medicalSummaryPeriod:
+          description: Processing hint which influences the inclusive date range for
+            data returned on the medical summary
+          allOf:
+            - $ref: "#/components/schemas/Period"
+      description: Directives which may influence how the data is processed
+    Directives_1:
+      type: object
+      properties:
+        newPatient:
+          type: boolean
+          description: Whether patient is new to the clinic (first time patient)
+          example: false
+          default: false
+        diagnosticCategories:
+          description: Diagnostic categories of interest regarding the patient
+          allOf:
+            - $ref: "#/components/schemas/DiagnosticCategories"
+        medicationsOfInterest:
+          type: array
+          description: "Medications of interest regarding the patient. Include MedicationRequest\
+            \ details if known. \nThese may be displayed on documents to direct the\
+            \ reader's attention.\n\n**For medication filtering to work correctly**,\
+            \ medication request codes must be 11-digit NDCs. Therefore the code system\
+            \ must be \neither http://hl7.org/fhir/sid/ndc (the NDC URI) or 2.16.840.1.113883.6.69\
+            \ (the NDC OID), and the code value must be an 11-digit NDC,\nwith or\
+            \ without dashes."
           items:
             $ref: "#/components/schemas/Medication"
       description: Directives which may influence how the data is processed
@@ -1591,7 +1624,7 @@ components:
         directives:
           description: Directives which may influence how the data is processed
           allOf:
-            - $ref: "#/components/schemas/Directives"
+            - $ref: "#/components/schemas/Directives_1"
     TimingEvent:
       type: string
       description: "Timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
