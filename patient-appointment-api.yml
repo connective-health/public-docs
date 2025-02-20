@@ -809,9 +809,42 @@ components:
             - $ref: "#/components/schemas/DiagnosticCategories"
         medicationsOfInterest:
           type: array
-          description: Medications of interest regarding the patient. Include MedicationRequest
-            details if known. These may be displayed on documents to direct the reader's
-            attention.
+          description: "Medications of interest regarding the patient. Include MedicationRequest\
+            \ details if known. \nThese may be displayed on documents to direct the\
+            \ reader's attention.\n\n**For medication filtering to work correctly**,\
+            \ medication request codes must be 11-digit NDCs. Therefore the code system\
+            \ must be \neither http://hl7.org/fhir/sid/ndc (the NDC URI) or 2.16.840.1.113883.6.69\
+            \ (the NDC OID), and the code value must be an 11-digit NDC,\nwith or\
+            \ without dashes."
+          items:
+            $ref: "#/components/schemas/Medication"
+        medicalSummaryPeriod:
+          description: Processing hint which influences the inclusive date range for
+            data returned on the medical summary
+          allOf:
+            - $ref: "#/components/schemas/Period"
+      description: Directives which may influence how the data is processed
+    Directives_1:
+      type: object
+      properties:
+        newPatient:
+          type: boolean
+          description: Whether patient is new to the clinic (first time patient)
+          example: false
+          default: false
+        diagnosticCategories:
+          description: Diagnostic categories of interest regarding the patient
+          allOf:
+            - $ref: "#/components/schemas/DiagnosticCategories"
+        medicationsOfInterest:
+          type: array
+          description: "Medications of interest regarding the patient. Include MedicationRequest\
+            \ details if known. \nThese may be displayed on documents to direct the\
+            \ reader's attention.\n\n**For medication filtering to work correctly**,\
+            \ medication request codes must be 11-digit NDCs. Therefore the code system\
+            \ must be \neither http://hl7.org/fhir/sid/ndc (the NDC URI) or 2.16.840.1.113883.6.69\
+            \ (the NDC OID), and the code value must be an 11-digit NDC,\nwith or\
+            \ without dashes."
           items:
             $ref: "#/components/schemas/Medication"
       description: Directives which may influence how the data is processed
@@ -1591,7 +1624,7 @@ components:
         directives:
           description: Directives which may influence how the data is processed
           allOf:
-            - $ref: "#/components/schemas/Directives"
+            - $ref: "#/components/schemas/Directives_1"
     TimingEvent:
       type: string
       description: "Timing of medication administration, taken from https://www.hl7.org/fhir/R4/valueset-timing-abbreviation.html\
