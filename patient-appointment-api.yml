@@ -303,7 +303,7 @@ paths:
     post:
       tags:
         - Patient Processing Panel
-      summary: Patient Data Processing
+      summary: Patient Processing Panel
       description: |2-
 
         # Data Requirements
@@ -317,7 +317,7 @@ paths:
 
         ## Overview
         Standard processing for clinical patient information, both summarized and complete information is supported.
-      operationId: processPatientDataPanel
+      operationId: processPatientProcessingPanel
       requestBody:
         content:
           application/json:
@@ -330,7 +330,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProcessingResponse"
+                $ref: "#/components/schemas/PatientProcessingPanelResponse"
         "400":
           description: Validation problems
           content:
@@ -342,13 +342,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProcessingResponse"
+                $ref: "#/components/schemas/PatientProcessingPanelResponse"
         "403":
           description: Missing permission
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProcessingResponse"
+                $ref: "#/components/schemas/PatientProcessingPanelResponse"
 components:
   schemas:
     AbstractResource_JsonError_:
@@ -1308,6 +1308,19 @@ components:
             to all requests in this panel.
           allOf:
             - $ref: "#/components/schemas/PatientPanelDirectives"
+    PatientProcessingPanelResponse:
+      type: object
+      properties:
+        correlationId:
+          type: string
+          description: Unique overall Connective Health identifier to correlate subsequent
+            processing or troubleshooting
+          example: 9e923da0-f3cb-4d2b-9fbb-17417104ffd0
+        responses:
+          type: array
+          description: Response details about each individual request in the panel
+          items:
+            $ref: "#/components/schemas/PatientProcessingResponse"
     PatientProcessingRequest:
       required:
         - patient
@@ -1371,6 +1384,20 @@ components:
           description: Directives which may influence how the data is processed
           allOf:
             - $ref: "#/components/schemas/Directives"
+    PatientProcessingResponse:
+      type: object
+      properties:
+        sequenceNumber:
+          type: integer
+          description: Zero-based sequence number for which element in the original
+            request this response is for
+          format: int32
+          example: 0
+        correlationId:
+          type: string
+          description: Unique Connective Health identifier to correlate subsequent
+            processing or troubleshooting
+          example: 9e923da0-f3cb-4d2b-9fbb-17417104ffd0
     PatientRecord:
       required:
         - patient
