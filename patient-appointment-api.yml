@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 2.0.0
+  version: 2.1.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -772,6 +772,11 @@ components:
           type: boolean
           description: Chronic pain-related diagnostic information is desired for
             the patient
+          example: false
+          default: false
+        pulmonary:
+          type: boolean
+          description: Pulmonary diagnostic information is desired for the patient
           example: false
           default: false
         renal:
