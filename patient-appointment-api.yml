@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 2.1.0
+  version: 3.0.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -824,8 +824,9 @@ components:
           items:
             $ref: "#/components/schemas/Medication"
         medicalSummaryPeriod:
-          description: Processing hint which influences the inclusive date range for
-            data returned on the medical summary
+          description: Processing hint which influences the inclusive date range
+            for data returned on the medical summary. If this is used, at least
+            one diagnostic category must also be enabled.
           allOf:
             - $ref: "#/components/schemas/Period"
       description: Directives which may influence how the data is processed
@@ -1609,7 +1610,8 @@ components:
           x-pattern-message: Should not contain special characters
         medicalSummaryPeriod:
           description: Processing hint which influences the inclusive date range for
-            data returned on the medical summary
+            data returned on the medical summary. If this is used, at least one
+            diagnostic category must also be enabled.
           allOf:
             - $ref: "#/components/schemas/Period"
         activeIcd10Diagnoses:
