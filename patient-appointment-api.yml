@@ -824,9 +824,9 @@ components:
           items:
             $ref: "#/components/schemas/Medication"
         medicalSummaryPeriod:
-          description: Processing hint which influences the inclusive date range
-            for data returned on the medical summary. If this is used, at least
-            one diagnostic category must also be enabled.
+          description: "Processing hint which influences the inclusive date range\
+            \ for data returned on the medical summary. If this is used, at least\
+            \ one diagnostic category must also be enabled."
           allOf:
             - $ref: "#/components/schemas/Period"
       description: Directives which may influence how the data is processed
@@ -1321,12 +1321,21 @@ components:
           type: string
           description: Unique overall Connective Health identifier to correlate subsequent
             processing or troubleshooting
-          example: 9e923da0-f3cb-4d2b-9fbb-17417104ffd0
+          example: 10c7b080-76f2-4aff-beeb-a2f7b4ca7a89
         responses:
           type: array
           description: Response details about each individual request in the panel
           items:
             $ref: "#/components/schemas/PatientProcessingResponse"
+      example:
+        correlationId: 10c7b080-76f2-4aff-beeb-a2f7b4ca7a89
+        responses:
+          - sequenceNumber: 0
+            correlationId: 4b0b3bdc-d007-4274-b1c7-f89fbb2fd775
+          - sequenceNumber: 1
+            correlationId: e82a9cfb-a6cd-4194-a0fd-9882b3a4e76b
+          - sequenceNumber: 2
+            correlationId: e5c3310a-6cb4-4755-a5c2-35b99d946181
     PatientProcessingRequest:
       required:
         - patient
@@ -1403,7 +1412,7 @@ components:
           type: string
           description: Unique Connective Health identifier to correlate subsequent
             processing or troubleshooting
-          example: 9e923da0-f3cb-4d2b-9fbb-17417104ffd0
+          example: e5c3310a-6cb4-4755-a5c2-35b99d946181
     PatientRecord:
       required:
         - patient
@@ -1609,9 +1618,9 @@ components:
           example: BATCH-123
           x-pattern-message: Should not contain special characters
         medicalSummaryPeriod:
-          description: Processing hint which influences the inclusive date range for
-            data returned on the medical summary. If this is used, at least one
-            diagnostic category must also be enabled.
+          description: "Processing hint which influences the inclusive date range\
+            \ for data returned on the medical summary. If this is used, at least\
+            \ one diagnostic category must also be enabled."
           allOf:
             - $ref: "#/components/schemas/Period"
         activeIcd10Diagnoses:
