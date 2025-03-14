@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 3.0.0
+  version: 3.1.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -345,6 +345,38 @@ paths:
                 $ref: "#/components/schemas/PatientProcessingPanelResponse"
         "403":
           description: Missing permission
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PatientProcessingPanelResponse"
+  /v2/patient-data/validate:
+    post:
+      tags:
+        - Patient Processing Panel
+      summary: Validate Patient Processing Panel
+      description: Performs validations for the request without doing any processing
+      operationId: validPatientProcessingPanel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatientProcessingPanel"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PatientProcessingPanelResponse"
+        "400":
+          description: Validation problems
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonError"
+        "401":
+          description: Missing or invalid apikey
           content:
             application/json:
               schema:

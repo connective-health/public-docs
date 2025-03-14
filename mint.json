@@ -84,6 +84,7 @@
           "group": "Clinical Data",
           "pages": [
             "clinical-data/patient-data-v2",
+            "clinical-data/patient-data-v2-validate",
             "clinical-data/patient-data-processing-v1",
             "clinical-data-sharing/patient-record",
             "clinical-data-sharing/encounter-summary"
