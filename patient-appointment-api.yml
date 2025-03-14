@@ -354,7 +354,7 @@ paths:
       tags:
         - Patient Processing Panel
       summary: Validate Patient Processing Panel
-      description: Performs validations for the request without doing any processing
+      description: Validates the request without doing any processing
       operationId: validPatientProcessingPanel
       requestBody:
         content:
