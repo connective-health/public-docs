@@ -9,8 +9,6 @@ info:
     email: techsupport@connectivehealth.io
   version: 3.2.0
 servers:
-  - url: http://localhost:8168/
-    description: Local testing only
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
   - url: https://processing-request-production.connectivehealth.io/
@@ -455,7 +453,7 @@ components:
             \ yyyy-MM-dd. Only panels generated on or after this date will include\
             \ this patient."
           format: date
-          example: 2024-11-05
+          example: "2024-11-05"
         endDate:
           type: string
           description: "Date the patient will stop being monitored, in ISO-8601 format\
@@ -463,7 +461,7 @@ components:
             \ will include this patient"
           format: date
           nullable: true
-          example: 2025-11-05
+          example: "2025-11-05"
         batchId:
           pattern: "[^<>\"%;+@]*$"
           type: string
@@ -494,7 +492,7 @@ components:
           example:
             - code: "401.1"
               displayName: Benign essential hypertension
-              date: 2023-12-12
+              date: "2023-12-12"
           items:
             $ref: "#/components/schemas/Diagnosis"
         activeSnomedDiagnoses:
@@ -506,7 +504,7 @@ components:
           example:
             - code: "34713006"
               displayName: Vitamin D deficiency
-              date: 2023-11-12
+              date: "2023-11-12"
           items:
             $ref: "#/components/schemas/Diagnosis"
         medications:
@@ -541,7 +539,7 @@ components:
           type: string
           description: Date the note was recorded or written.
           format: date
-          example: 2022-12-12
+          example: "2022-12-12"
         code:
           description: Type of note content. Should come from https://vsac.nlm.nih.gov/valueset/2.16.840.1.113883.11.20.9.68/expansion/Latest
           example:
@@ -656,7 +654,7 @@ components:
           type: string
           description: Date of the problem (onset or diagnosed)
           format: date
-          example: 2022-12-12
+          example: "2022-12-12"
     Diagnosis_1:
       required:
         - active
@@ -688,7 +686,7 @@ components:
           type: string
           description: Date of the problem (onset or diagnosed)
           format: date
-          example: 2022-12-12
+          example: "2022-12-12"
         active:
           type: boolean
           description: Whether the diagnosis is still active or not
@@ -1190,7 +1188,7 @@ components:
           type: string
           description: "Date the medication was prescribed, in ISO-8601 format yyyy-MM-dd"
           format: date
-          example: 2023-12-02
+          example: "2023-12-02"
         prescriber:
           description: Prescriber of the medication
           allOf:
@@ -1309,7 +1307,7 @@ components:
           type: string
           description: Birth date of the patient in ISO-8601 format yyyy-MM-dd
           format: date
-          example: 1992-04-09
+          example: "1992-04-09"
         address:
           $ref: "#/components/schemas/Address"
         contactPoints:
@@ -1387,7 +1385,7 @@ components:
           type: string
           description: Date of the appointment in ISO-8601 format yyyy-MM-dd
           format: date
-          example: 2025-11-05
+          example: "2025-11-05"
         requestingProvider:
           $ref: "#/components/schemas/Provider"
         clinicName:
@@ -1482,7 +1480,7 @@ components:
           example:
             - code: "401.1"
               displayName: Benign essential hypertension
-              date: 2023-12-12
+              date: "2023-12-12"
           items:
             $ref: "#/components/schemas/Diagnosis"
         activeSnomedDiagnoses:
@@ -1494,7 +1492,7 @@ components:
           example:
             - code: "34713006"
               displayName: Vitamin D deficiency
-              date: 2023-11-12
+              date: "2023-11-12"
           items:
             $ref: "#/components/schemas/Diagnosis"
         medications:
@@ -1539,7 +1537,7 @@ components:
           type: string
           description: Birth date of the patient in ISO-8601 format yyyy-MM-dd
           format: date
-          example: 1992-04-09
+          example: "1992-04-09"
         addresses:
           minItems: 1
           type: array
@@ -1559,12 +1557,12 @@ components:
           type: string
           description: "Beginning of the period, inclusive"
           format: date
-          example: 2022-12-12
+          example: "2022-12-12"
         endDate:
           type: string
           description: "End of the period, inclusive"
           format: date
-          example: 2022-12-14
+          example: "2022-12-14"
       description: Period of time this encounter took place. If end date is not specified
         then it will be defaulted to the start date
     ProcessingResponse:
@@ -1611,7 +1609,7 @@ components:
           type: string
           description: Date of the appointment in ISO-8601 format yyyy-MM-dd
           format: date
-          example: 2024-11-05
+          example: "2024-11-05"
         upcomingAppointmentProvider:
           $ref: "#/components/schemas/Provider"
         clinicName:
@@ -1678,7 +1676,7 @@ components:
           example:
             - code: "401.1"
               displayName: Benign essential hypertension
-              date: 2023-12-12
+              date: "2023-12-12"
           items:
             $ref: "#/components/schemas/Diagnosis"
         activeSnomedDiagnoses:
@@ -1690,7 +1688,7 @@ components:
           example:
             - code: "34713006"
               displayName: Vitamin D deficiency
-              date: 2023-11-12
+              date: "2023-11-12"
           items:
             $ref: "#/components/schemas/Diagnosis"
         medications:
