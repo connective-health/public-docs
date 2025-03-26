@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 3.1.0
+  version: 3.2.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -814,6 +814,11 @@ components:
         renal:
           type: boolean
           description: Renal diagnostic information is desired for the patient
+          example: false
+          default: false
+        stroke:
+          type: boolean
+          description: Stroke diagnostic information is desired for the patient
           example: false
           default: false
         toxicological:
