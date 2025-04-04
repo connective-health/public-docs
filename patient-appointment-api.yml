@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 3.2.0
+  version: 3.2.1
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -1090,6 +1090,8 @@ components:
               type: string
               nullable: true
     MedHistoryPatientPanel:
+      required:
+        - medHistoryPatientRecords
       type: object
       properties:
         medHistoryPatientRecords:
@@ -1330,6 +1332,8 @@ components:
       description: Directives which may influence how the data is processed. Applies
         to all requests in this panel.
     PatientProcessingPanel:
+      required:
+        - patientProcessingRequests
       type: object
       properties:
         patientProcessingRequests:
