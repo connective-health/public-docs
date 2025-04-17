@@ -4,8 +4,15 @@ description: 'Product and API Updates'
 icon: 'gears'
 ---
 
-<Update label="2025-04-17" description="v3.3.0">
+<Update label="2025-04-17" description="v3.4.0">
+    ## New Features
+    * Consent fields added to ADT Panel requests
 
+    ## Bug Fixes
+    * ADT Panel lists containing null items now fail validation as originally intended
+</Update>
+
+<Update label="2025-04-17" description="v3.3.0">
     ## New Features
     * Better support for [KAID Health](https://www.kaidhealth.com) processing. See [Patient Data v2](/clinical-data/patient-data-v2) `patientPanelDirectives.kaidConfiguration` for details
 
@@ -14,43 +21,36 @@ icon: 'gears'
 </Update>
 
 <Update label="2025-03-26" description="v3.2.1">
-
     ## Bug Fixes
     * Patient Panel and Medication History Panel null lists now fail validation as originally intended
 </Update>
 
 <Update label="2025-03-26" description="v3.2.0">
-
     ## Documentation
     * New diagnostic category added: stroke
 </Update>
 
 <Update label="2025-03-14" description="v3.1.0">
-
     ## New Features
     * New [Patient Data v2 Validate](/clinical-data/patient-data-v2-validate) endpoint that checks the validity of one or more processing records without actually processing them
 </Update>
 
 <Update label="2025-03-05" description="v3.0.0">
-
     ## Breaking Change
     * Medical Summary Period feature can only be used in conjunction with Diagnostic Category Directive feature. Requests that specify a medical summary period without also selecting at least one diagnostic category will be rejected
 </Update>
 
 <Update label="2025-03-03" description="v2.1.0">
-
     ## Documentation
     * New diagnostic category added: pulmonary
 </Update>
 
 <Update label="2025-02-20" description="v2.0.0">
-
     ## Documentation
     * Clarifications regarding the Medications Of Interest field and how it is intended to be used
 </Update>
 
 <Update label="2025-02-12" description="v2.0.0">
-
     ## New Features
     * New [Patient Data API](/clinical-data/patient-data-v2) endpoint with new support for pharmacy medication history processing
 

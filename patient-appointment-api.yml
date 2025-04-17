@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 3.3.0
+  version: 3.4.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -517,6 +517,42 @@ components:
           description: Additional information provided about the patient
           items:
             $ref: "#/components/schemas/ClinicalNote"
+        consent:
+          description: "Whether patient consent has been obtained to register and/or\
+            \ share their data them in specific contexts. Some HIEs require consent\
+            \ information to register patients. It is important to include non-positive\
+            \ consent, as in some cases, those patients may still be eligible to have\
+            \ some information shared in emergencies."
+          allOf:
+            - $ref: "#/components/schemas/Consent"
+    BronxRhioConsent:
+      required:
+        - status
+      type: object
+      properties:
+        status:
+          description: Patient's consent status for Bronx RHIO
+          allOf:
+            - $ref: "#/components/schemas/BronxRhioConsent.Status"
+        date:
+          type: string
+          description: Effective date of patient consent for Bronx RHIO
+          format: date
+      description: "Patient Consent information for Bronx RHIO, Inc. of New York State."
+    BronxRhioConsent.Status:
+      type: string
+      description: Patient's consent status for Bronx RHIO
+      enum:
+        - "YES"
+        - "NO"
+        - UNKNOWN
+        - RESET
+      x-enum-descriptions:
+        - Yes (positive consent)
+        - No (negative consent)
+        - Unknown (use this if neither YES/NO apply)
+        - Reset/Remove (this should generally not be used unless directed by Connective
+          Health)
     CareSetting:
       type: string
       description: Classification for where the care took place
@@ -595,6 +631,19 @@ components:
         codeSystem: 2.16.840.1.113883.6.88
         codeSystemName: RxNorm
         displayName: metFORMIN
+    Consent:
+      type: object
+      properties:
+        bronxRhioConsent:
+          description: "Patient Consent information for Bronx RHIO, Inc. of New York\
+            \ State."
+          allOf:
+            - $ref: "#/components/schemas/BronxRhioConsent"
+      description: "Whether patient consent has been obtained to register and/or share\
+        \ their data them in specific contexts. Some HIEs require consent information\
+        \ to register patients. It is important to include non-positive consent, as\
+        \ in some cases, those patients may still be eligible to have some information\
+        \ shared in emergencies."
     ContactPoint:
       required:
         - contactPointSystem
