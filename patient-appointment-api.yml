@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 3.2.1
+  version: 3.3.0
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -451,7 +451,7 @@ components:
           type: string
           description: "Date the patient will start being monitored, in ISO-8601 format\
             \ yyyy-MM-dd. Only panels generated on or after this date will include\
-            \ this patient."
+            \ this patient. Defaults to current date."
           format: date
           example: "2024-11-05"
         endDate:
@@ -655,7 +655,7 @@ components:
           description: Date of the problem (onset or diagnosed)
           format: date
           example: "2022-12-12"
-    Diagnosis_1:
+    Diagnosis_2:
       required:
         - active
         - code
@@ -1089,6 +1089,17 @@ components:
             path:
               type: string
               nullable: true
+    KaidConfiguration:
+      type: object
+      properties:
+        tenantId:
+          type: string
+          description: "Identifier for the specific KAID Tenant configuration which\
+            \ should be used for processing. \nThis value is required to match a tenant\
+            \ configured by Connective Health."
+          example: ""
+      description: "Configuration details for interactions with the KAID service.\
+        \ Normally, not populated."
     MedHistoryPatientPanel:
       required:
         - medHistoryPatientRecords
@@ -1329,6 +1340,11 @@ components:
             Contact your customer success representative for more details on usage of this feature.
           example: true
           default: false
+        kaidConfiguration:
+          description: "Configuration details for interactions with the KAID service.\
+            \ Normally, not populated."
+          allOf:
+            - $ref: "#/components/schemas/KaidConfiguration"
       description: Directives which may influence how the data is processed. Applies
         to all requests in this panel.
     PatientProcessingPanel:
@@ -1425,7 +1441,7 @@ components:
             is an existing patient then this list should be populated with all known
             diagnoses
           items:
-            $ref: "#/components/schemas/Diagnosis_1"
+            $ref: "#/components/schemas/Diagnosis_2"
         medications:
           type: array
           description: All known medications about the patient
