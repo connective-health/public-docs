@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 3.4.0
+  version: 3.4.1
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -1608,6 +1608,7 @@ components:
           format: date
           example: "1992-04-09"
         addresses:
+          maxItems: 3
           minItems: 1
           type: array
           items:
