@@ -1,0 +1,127 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Connective Health",
+  "colors": {
+    "primary": "#047DB5",
+    "light": "#1DBCEE",
+    "dark": "#0C6284"
+  },
+  "favicon": "/cropped-favicon-192x192.png",
+  "navigation": {
+    "anchors": [
+      {
+        "anchor": "Documentation",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Welcome",
+            "pages": [
+              "product/introduction",
+              "implementation/pilot-process"
+            ]
+          },
+          {
+            "group": "Product",
+            "pages": [
+              "product/patient-care-summary",
+              "product/risk-adjustment",
+              "product/quality-gap-closure",
+              "product/fhir-data",
+              "product/structured-reports",
+              "product/webhooks"
+            ]
+          },
+          {
+            "group": "Implementation",
+            "pages": [
+              "implementation/sample-project-steps",
+              {
+                "group": "Request Options",
+                "pages": [
+                  "implementation/ehr-integration",
+                  "implementation/api-integration"
+                ]
+              },
+              {
+                "group": "Response Options",
+                "pages": [
+                  "responses/clinical-direct-messaging",
+                  "responses/cloud-storage",
+                  "responses/ehr-integration"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "APIs",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/patient-data-v2-upgrade-guide",
+              "api-reference/release-notes",
+              {
+                "group": "Clinical Data",
+                "pages": [
+                  "clinical-data/patient-data-v2",
+                  "clinical-data/patient-data-v2-validate",
+                  "clinical-data/patient-data-processing-v1",
+                  "clinical-data-sharing/patient-record",
+                  "clinical-data-sharing/encounter-summary"
+                ]
+              },
+              {
+                "group": "ADT Patient Panel",
+                "pages": [
+                  "adt-patient-panel/panel-registration"
+                ]
+              },
+              {
+                "group": "Medication History",
+                "pages": [
+                  "medication-history/patient-panel-load",
+                  "medication-history/bulk-patient-panel-file-load"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "anchor": "Home",
+        "icon": "house-user",
+        "groups": [
+          {
+            "group": "Welcome",
+            "pages": [
+              "introduction"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/CH_horizontal.png",
+    "dark": "/logo/dark.png",
+    "href": "https://connectivehealth.io"
+  },
+  "api": {
+    "openapi": [
+      "patient-appointment-api.yml"
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:techsupport@connectivehealth.io"
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/connective-health",
+      "linkedin": "https://www.linkedin.com/company/connective-health/"
+    }
+  }
+}

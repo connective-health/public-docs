@@ -6,15 +6,16 @@ icon: 'cloud-arrow-up'
 
 ## Basics
 
-Delivery to a cloud storage provider object storage can be configured as needed which will enabled documents (PDFs or FHIR bundles) to be pushed to a cloud storage location of your choosing.
+Delivery to a cloud storage provider object storage can be configured as needed which will enabled documents
+(PDFs or FHIR bundles) to be pushed to a cloud storage location of your choosing.
 
 <Tip>
-    After following this guide, provide Connective Health with all details from the [finish](#finish) section
+    After following this guide, provide Connective Health with all details from the [finish S3](#connective-health-s3-setup) or [finish Azure](#connective-health-azure-setup) sections
 </Tip>
 
 ### File Delivery Location Template
 
-Customers are able to decide the location within S3 where the files are delivered to using a configurable template which
+Customers are able to decide the location within their cloud storage where the files are delivered to using a configurable template which
 Connective Health maintains on their behalf. A reasonable default for the template would be `incoming_files/[yyyy]/[MM]/[dd]/[correlationId]_[mrn]_[patientLastName]_[documentType].[ext]`
 
 See the below table for all the dynamic variables which are available in the template. Work with your account manager
@@ -34,7 +35,9 @@ to decide what this configuration should be.
 | `documentType`     | Document type. Required to be part of the configured location  |
 | `ext`              | File extension. Required to be part of the configured location |
 
-## AWS S3 Setup
+## AWS S3
+
+### Customer Setup
 
 We connect to AWS S3 using a federated web identity authz model. This allows for security without the need to exchange static secrets.
 
@@ -103,9 +106,43 @@ We connect to AWS S3 using a federated web identity authz model. This allows for
 }
 ```
 
-### Finish
+### Connective Health S3 Setup
 
-When you are finished with your configuration please notify Connective Health of these three pieces of information
-1. Your chosen file delivery location template which will dictate the exact path Connective Health writes files to within your S3 bucket
-2. The name of your S3 bucket - we will need a staging/test bucket as well as a production bucket
+When you are finished with your configuration, please notify Connective Health of the following information:
+
+1. Your chosen file delivery location template, which will dictate the exact path Connective Health writes files to within your S3 bucket
+2. The name of your S3 bucket — we will need a staging/test bucket as well as a production bucket
 3. The role's ARN value. This can be found on the role page, under the summary section
+
+
+## Azure Blob Storage
+
+### Customer Setup
+
+We connect to Azure Blob Storage using a federated identity credential model. This allows for security without the need to exchange static secrets.
+
+1. Create an App registration in Azure Active Directory
+   1. This is needed to get a client ID
+   2. Under the app registration, create a new federated credential
+   3. Connective Health will provide you with the appropriate Google Account subject identifier value based on the environment (staging or production)
+
+![Azure Federated Credential Setup](/images/azure-federated-credential.png)
+
+2. Create a Storage account in Azure
+   1. Our recommendation is to create a new storage account for this specific purpose to prevent accidental data leakage or other unexpected problems
+   2. Under this storage account, add the app registration from the previous step with the proper access role
+   3. You can choose either a standard role like "Storage Blob Data Contributor" or create a custom role based on your security requirements
+
+3. Create a Storage container under the storage account
+   1. This container will be used to store the documents that Connective Health pushes to your Azure Blob Storage
+
+### Connective Health Azure Setup
+
+When you are finished with your configuration, please notify Connective Health of the following information:
+
+1. Your chosen file delivery location template, which will dictate the exact path Connective Health writes files to within your Azure storage container
+2. The name of your storage account and container — we will need both staging/test and production environments
+3. The app registration Application (client) ID
+4. The app registration Directory (tenant) ID
+5. The storage account's blob service endpoint URL
+6. The storage account's container name
