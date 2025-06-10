@@ -10,7 +10,8 @@ Delivery to a cloud storage provider object storage can be configured as needed 
 (PDFs or FHIR bundles) to be pushed to a cloud storage location of your choosing.
 
 <Tip>
-    After following this guide, provide Connective Health with all details from the [finish S3](#connective-health-s3-setup) or [finish Azure](#connective-health-azure-setup) sections
+    After following this guide, provide Connective Health with all details from the [finish
+    S3](#connective-health-s3-setup) or [finish Azure](#connective-health-azure-setup) sections
 </Tip>
 
 ### File Delivery Location Template
@@ -23,18 +24,21 @@ to decide what this configuration should be.
 
 #### Available Dynamic Values
 
-| Property           | Description                                                    |
-|--------------------|----------------------------------------------------------------|
-| `patientFirstName` | Patient first name                                             |
-| `patientLastName`  | Patient last name                                              |
-| `mrn`              | Patient MRN                                                    |
-| `providerNpi`      | Provider NPI                                                   |
-| `correlationId`    | Connective Health Correlation ID                               |
-| `yyyy`             | Four-digit year                                                |
-| `MM`               | Two-digit month                                                |
-| `dd`               | Two-digit day                                                  |
-| `documentType`     | Document type. Required to be part of the configured location  |
-| `ext`              | File extension. Required to be part of the configured location |
+| Property            | Description                                                    |
+|---------------------|----------------------------------------------------------------|
+| `patientFirstName`  | Patient first name                                             |
+| `patientLastName`   | Patient last name                                              |
+| `mrn`               | Patient MRN                                                    |
+| `clinicName`        | Clinic name                                                    |
+| `providerNpi`       | Provider NPI                                                   |
+| `providerFirstName` | Provider first name                                            |
+| `providerLastName`  | Provider last name                                             |
+| `correlationId`     | Connective Health Correlation ID                               |
+| `yyyy`              | Four-digit year                                                |
+| `MM`                | Two-digit month                                                |
+| `dd`                | Two-digit day                                                  |
+| `documentType`      | Document type. Required to be part of the configured location  |
+| `ext`               | File extension. Required to be part of the configured location |
 
 ## AWS S3
 
@@ -43,10 +47,10 @@ to decide what this configuration should be.
 We connect to AWS S3 using a federated web identity authz model. This allows for security without the need to exchange static secrets.
 
 1. Create (or identify) an S3 bucket which should be used for Connective Health to push documents to
-    1. Our recommendation is to create a new bucket for this specific purpose to prevent accidental data leakage or other unexpected problems
+ 1. Our recommendation is to create a new bucket for this specific purpose to prevent accidental data leakage or other unexpected problems
 2. Create a new Role under the IAM section of your AWS Console
 3. When building the role, choose Custom trust policy and edit the JSON of the policy
-    1. Set the policy to the below JSON, Connective Health will provide you with the appropriate Google Account `sub` value based on the environment (staging or production)
+ 1. Set the policy to the below JSON, Connective Health will provide you with the appropriate Google Account `sub` value based on the environment (staging or production)
 ```json
 {
 	"Version": "2012-10-17",
@@ -77,11 +81,11 @@ We connect to AWS S3 using a federated web identity authz model. This allows for
 4. After creating the role, click on it
 5. Click the Add permissions dropdown and choose Create inline policy
 6. Select JSON
-    1. The permissions should provide these permissions (at least):
-        * s3:PutObject
-        * s3:GetObject
-        * s3:ListBucket
-        * s3:GetBucketLocation
+ 1. The permissions should provide these permissions (at least):
+ * s3:PutObject
+ * s3:GetObject
+ * s3:ListBucket
+ * s3:GetBucketLocation
 7. Make sure to populate the resources array with the S3 bucket and objects
 8. Here is a complete example:
 
@@ -123,19 +127,19 @@ When you are finished with your configuration, please notify Connective Health o
 We connect to Azure Blob Storage using a federated identity credential model. This allows for security without the need to exchange static secrets.
 
 1. Create an App registration in Azure Active Directory
-   1. This is needed to get a client ID
-   2. Under the app registration, create a new federated credential
-   3. Connective Health will provide you with the appropriate Google Account subject identifier value based on the environment (staging or production)
+1. This is needed to get a client ID
+2. Under the app registration, create a new federated credential
+3. Connective Health will provide you with the appropriate Google Account subject identifier value based on the environment (staging or production)
 
 ![Azure Federated Credential Setup](/images/azure-federated-credential.png)
 
 2. Create a Storage account in Azure
-   1. Our recommendation is to create a new storage account for this specific purpose to prevent accidental data leakage or other unexpected problems
-   2. Under this storage account, add the app registration from the previous step with the proper access role
-   3. You can choose either a standard role like "Storage Blob Data Contributor" or create a custom role based on your security requirements
+1. Our recommendation is to create a new storage account for this specific purpose to prevent accidental data leakage or other unexpected problems
+2. Under this storage account, add the app registration from the previous step with the proper access role
+3. You can choose either a standard role like "Storage Blob Data Contributor" or create a custom role based on your security requirements
 
 3. Create a Storage container under the storage account
-   1. This container will be used to store the documents that Connective Health pushes to your Azure Blob Storage
+1. This container will be used to store the documents that Connective Health pushes to your Azure Blob Storage
 
 ### Connective Health Azure Setup
 
