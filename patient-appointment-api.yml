@@ -7,7 +7,7 @@ info:
     name: Connective Health Tech Support
     url: https://connectivehealth.io
     email: techsupport@connectivehealth.io
-  version: 3.5.0
+  version: 3.5.1
 servers:
   - url: https://processing-request-staging.connectivehealth.io/
     description: Customer testing site. Test data only. No PHI.
@@ -422,11 +422,12 @@ components:
           x-pattern-message: State code must be two character postal abbreviation
             or blank
         zip:
-          pattern: "^\\d{5}$"
+          pattern: "^(?!^00000$)\\d{5}$"
           type: string
           description: 5-digit zip code
           example: "55401"
-          x-pattern-message: Zip must be the five digit postal code
+          x-pattern-message: Zip must be a valid five-digit postal code
+          x-not-null-message: Zip must not be null
       example:
         lines:
           - 123 Main St
@@ -1126,7 +1127,7 @@ components:
           example: 1.2.3.4
         extension:
           minLength: 1
-          pattern: "[^<>\"%;+@]*$"
+          pattern: "[^()<>\"%;+@]*$"
           type: string
           description: Identifier value or extension
           example: ABC123
